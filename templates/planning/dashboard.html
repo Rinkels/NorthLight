@@ -58,7 +58,7 @@
       <p class="hint mb-3">Gap = Importance − Satisfaction. A signal worth reading, not a ranking of what you “should” fix.</p>
       <div class="table-responsive">
       <table class="table table-sm align-middle mb-0">
-        <thead class="small text-muted"><tr><th>Area</th><th class="text-end">Sat.</th><th class="text-end">Imp.</th><th class="text-end">Gap</th><th>Mode</th><th>Goals</th></tr></thead>
+        <thead class="small text-muted"><tr><th>Area</th><th class="text-end">Sat.</th><th class="text-end">Imp.</th><th class="text-end">Gap</th><th>Mode</th><th>Goals</th><th style="min-width:110px">Progress</th></tr></thead>
         <tbody>
         {% for r in priority %}
           <tr>
@@ -68,9 +68,13 @@
             <td class="text-end score {{ r.gap|gap_class }}">{{ r.gap|signed }}</td>
             <td><span class="badge bg-{{ r.assessment.strategic_mode|mode_class }}">{{ r.assessment.get_strategic_mode_display }}</span></td>
             <td class="small">{% for g in r.goals %}<div>{{ g.title|truncatechars:48 }}</div>{% empty %}<span class="text-muted">—</span>{% endfor %}</td>
+            <td>{% with p=r.avg_progress %}{% if p is not None %}
+              <div class="progress"><div class="progress-bar" style="width:{{ p }}%"></div></div>
+              <div class="hint text-nowrap">{{ p }}% · {{ r.open_goal_count }}/{{ r.goals|length }} open</div>
+            {% else %}<span class="hint">no goals</span>{% endif %}{% endwith %}</td>
           </tr>
         {% empty %}
-          <tr><td colspan="6" class="text-muted">No assessments yet — <a href="{% url 'planning:onboarding' 3 %}">rate your areas</a>.</td></tr>
+          <tr><td colspan="7" class="text-muted">No assessments yet — <a href="{% url 'planning:onboarding' 3 %}">rate your areas</a>.</td></tr>
         {% endfor %}
         </tbody>
       </table>
@@ -124,7 +128,26 @@
     options: {
       responsive: true,
       scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, showLabelBackdrop: false, color: '#8b80a3' }, grid: { color: '#d3c8ea' }, angleLines: { color: '#d3c8ea' }, pointLabels: { font: { size: 12 }, color: '#4a4160' } } },
-      plugins: { legend: { display: false } },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#3a3150', titleFont: { weight: '600' }, padding: 10, displayColors: false,
+          callbacks: {
+            title: (items) => wheel.labels[items[0].dataIndex],
+            label: (item) => `${item.dataset.label} ${item.formattedValue}`,
+            afterBody: (items) => {
+              const i = items[0].dataIndex;
+              const gap = wheel.importance[i] - wheel.satisfaction[i];
+              const lines = [`Gap ${gap > 0 ? '+' : ''}${gap}${wheel.mode[i] ? ' · ' + wheel.mode[i] : ''}`];
+              lines.push(wheel.goals[i]
+                ? `Goals: ${wheel.open[i]} open of ${wheel.goals[i]} · avg ${wheel.progress[i]}%`
+                : 'No goals this year');
+              return lines;
+            }
+          }
+        }
+      },
       onClick: (evt) => {
         const pts = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
         if (pts.length) window.location.href = '/areas/' + wheel.ids[pts[0].index] + '/';

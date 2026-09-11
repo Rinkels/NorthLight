@@ -85,6 +85,22 @@ class NextYearTests(TestCase):
         self.assertEqual(Goal.objects.filter(personal_year=nxt).count(), 0)
 
 
+class DashboardRowTests(TestCase):
+    def test_area_progress_and_wheel_payload(self):
+        from planning.services import dashboard_data
+        s = Setup("dash")  # one goal at 40% in s.area; other areas have none
+        data = dashboard_data(s.user)
+        row = next(r for r in data.rows if r.area == s.area)
+        self.assertEqual((row.avg_progress, row.open_goal_count), (40, 1))
+        empty = next(r for r in data.rows if r.area != s.area)
+        self.assertIsNone(empty.avg_progress)          # no goals ≠ 0%
+        wheel = data.wheel
+        idx = wheel["ids"].index(s.area.id)
+        self.assertEqual((wheel["goals"][idx], wheel["open"][idx], wheel["progress"][idx]), (1, 1, 40))
+        self.assertEqual(wheel["mode"][idx], "Improve")
+        self.assertIsNone(wheel["progress"][wheel["ids"].index(empty.area.id)])
+
+
 class ProviderSeamTests(TestCase):
     def test_update_goal_value_completes_when_target_reached(self):
         s = Setup("p1")

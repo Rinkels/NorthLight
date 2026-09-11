@@ -174,6 +174,18 @@ class AreaRow:
     def gap(self) -> int | None:
         return self.assessment.priority_gap if self.assessment else None
 
+    @property
+    def open_goal_count(self) -> int:
+        return sum(1 for g in self.goals if g.is_open)
+
+    @property
+    def avg_progress(self) -> int | None:
+        """Mean goal progress for the area, or None when it has no goals —
+        an area with no goals (Protect, Maintain) is not "at 0%"."""
+        if not self.goals:
+            return None
+        return int(round(sum(g.progress() for g in self.goals) / len(self.goals)))
+
 
 @dataclass
 class DashboardData:
@@ -194,6 +206,11 @@ class DashboardData:
             "ids": [r.area.id for r in self.rows],
             "satisfaction": [r.assessment.satisfaction if r.assessment else 0 for r in self.rows],
             "importance": [r.assessment.importance if r.assessment else 0 for r in self.rows],
+            "mode": [r.assessment.get_strategic_mode_display() if r.assessment else "" for r in self.rows],
+            # Goal execution rides along for the tooltip only — never as a ring.
+            "goals": [len(r.goals) for r in self.rows],
+            "open": [r.open_goal_count for r in self.rows],
+            "progress": [r.avg_progress for r in self.rows],
         }
 
 
