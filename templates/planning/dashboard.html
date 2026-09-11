@@ -29,7 +29,7 @@
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h2 class="h6 mb-0">Life Wheel</h2>
         <label class="form-check form-switch small mb-0">
-          <input class="form-check-input" type="checkbox" id="toggleImportance">
+          <input class="form-check-input" type="checkbox" id="toggleImportance" checked>
           <span class="form-check-label">Compare Importance</span>
         </label>
       </div>
@@ -117,7 +117,7 @@
   if (!wheel.labels.length) return;
   const ctx = document.getElementById('wheel');
   const sat = { label: 'Satisfaction', data: wheel.satisfaction, borderColor: '#2f6f8f', backgroundColor: 'rgba(47,111,143,.18)', pointBackgroundColor: '#2f6f8f', borderWidth: 2 };
-  const imp = { label: 'Importance', data: wheel.importance, borderColor: '#b8860b', backgroundColor: 'rgba(184,134,11,.10)', pointBackgroundColor: '#b8860b', borderWidth: 2, borderDash: [4, 3], hidden: true };
+  const imp = { label: 'Importance', data: wheel.importance, borderColor: '#b8860b', backgroundColor: 'rgba(184,134,11,.10)', pointBackgroundColor: '#b8860b', borderWidth: 2, borderDash: [4, 3], hidden: false };
   const chart = new Chart(ctx, {
     type: 'radar',
     data: { labels: wheel.labels, datasets: [sat, imp] },
