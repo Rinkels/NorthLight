@@ -1,0 +1,5 @@
+Django>=6.0,<7.0
+python-dotenv>=1.0
+# SQLite for local development; set DATABASE_URL for PostgreSQL in production.
+dj-database-url>=2.0
+psycopg[binary]>=3.1; python_version >= "3.10"

@@ -1,0 +1,10 @@
+/* NorthLight — calm, thoughtful, uncluttered. Extend here; avoid inline styles. */
+:root {
+  --nl-accent: #2f6f8f;      /* understated compass-blue */
+  --nl-northlight: #b8860b;  /* the North Light: warm, distinctive, not loud */
+}
+
+.northlight {
+  border-left: 3px solid var(--nl-northlight);
+  padding-left: 1rem;
+}
