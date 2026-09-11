@@ -1,0 +1,15 @@
+{% extends "planning/onboarding/_shell.html" %}
+{% block step %}
+<div class="nl-card p-4">
+  <h1 class="h3 mb-3">Welcome to NorthLight</h1>
+  <p class="lead">The objective is <strong>not</strong> to make every area of your life a 10.</p>
+  <p>NorthLight helps you answer a short sequence of questions, and return to them over time:</p>
+  <ol class="mb-4">
+    <li>Where am I now?</li><li>What actually matters to me?</li><li>In what direction do I want each part of my life to move — and why?</li>
+    <li>What would meaningful improvement look like over the next year?</li><li>What specific goals would demonstrate that?</li>
+    <li>What should I do over the next 90 days?</li><li>What should I <em>protect</em> rather than improve?</li>
+  </ol>
+  <p class="hint">Setup takes a few minutes. Every step is skippable and everything is saved as you go.</p>
+  <form method="post">{% csrf_token %}<button class="btn btn-primary">Let's begin</button></form>
+</div>
+{% endblock %}

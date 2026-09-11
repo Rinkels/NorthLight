@@ -1,0 +1,10 @@
+{% extends "planning/onboarding/_shell.html" %}
+{% block step %}
+<div class="nl-card p-4">
+  <h1 class="h4 mb-1">Where am I?</h1>
+  <p class="hint mb-3"><strong>Satisfaction:</strong> how satisfied am I with this area today? <strong>Importance:</strong> how important is it to me? Both 1–10. A low score isn't automatically a problem.</p>
+  <form method="post" novalidate>{% csrf_token %}{% include "planning/onboarding/_scores.html" %}
+    <button class="btn btn-primary mt-3">Continue</button></form>
+</div>
+{% endblock %}
+{% block scripts %}<script>document.querySelectorAll('.range-value').forEach(s=>{const i=document.getElementById(s.dataset.for);if(i){i.addEventListener('input',()=>s.textContent=i.value);}});</script>{% endblock %}

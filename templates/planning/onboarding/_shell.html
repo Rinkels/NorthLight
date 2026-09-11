@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · NorthLight{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-8">
+  <div class="d-flex justify-content-between align-items-center step-nav mb-2">
+    <span>Step {{ step }} of {{ total }} · {{ title }}</span>
+    <form method="post" class="m-0">{% csrf_token %}<button class="btn btn-link btn-sm p-0" name="action" value="finish">Skip the rest for now</button></form>
+  </div>
+  <div class="progress mb-4"><div class="progress-bar" style="width:{{ progress }}%"></div></div>
+  {% block step %}{% endblock %}
+  <div class="d-flex justify-content-between mt-4 step-nav">
+    {% if step > 1 %}<a href="{% url 'planning:onboarding' step|add:'-1' %}">← Back</a>{% else %}<span></span>{% endif %}
+    {% if step < total %}<a href="{% url 'planning:onboarding' step|add:'1' %}">Skip this step →</a>{% endif %}
+  </div>
+</div></div>
+{% endblock %}

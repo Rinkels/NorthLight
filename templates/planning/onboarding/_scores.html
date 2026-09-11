@@ -1,0 +1,12 @@
+{{ formset.management_form }}
+{% for f in formset %}
+  <div class="row align-items-center py-3 {% if not forloop.first %}border-top{% endif %}">
+    {{ f.id }}
+    <div class="col-md-4 fw-semibold">{{ f.instance.life_area.name }}</div>
+    <div class="col-md-4"><label class="form-label small mb-0" for="{{ f.satisfaction.id_for_label }}">Satisfaction</label>
+      <div class="d-flex align-items-center gap-2">{{ f.satisfaction }}<span class="range-value" data-for="{{ f.satisfaction.id_for_label }}">{{ f.instance.satisfaction }}</span></div></div>
+    <div class="col-md-4"><label class="form-label small mb-0" for="{{ f.importance.id_for_label }}">Importance</label>
+      <div class="d-flex align-items-center gap-2">{{ f.importance }}<span class="range-value" data-for="{{ f.importance.id_for_label }}">{{ f.instance.importance }}</span></div></div>
+    {% for e in f.errors.values %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+  </div>
+{% endfor %}

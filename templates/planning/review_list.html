@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Reviews · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4">
+  <div><h1 class="h3 mb-1">Reviews</h1><div class="hint">Historical reflection is as important as current tracking.</div></div>
+  <div class="d-flex gap-2 flex-wrap">{% for v, l in types %}<a class="btn btn-sm btn-outline-primary" href="{% url 'planning:review_create' v %}">{{ l }}</a>{% endfor %}</div>
+</div>
+<div class="nl-card p-4">
+  {% for r in reviews %}
+    <div class="d-flex justify-content-between py-2 {% if not forloop.first %}border-top{% endif %}">
+      <div><a href="{% url 'planning:review_detail' r.pk %}" class="text-decoration-none">{{ r.get_review_type_display }}{% if r.period_label %} — {{ r.period_label }}{% endif %}</a>
+        <div class="hint">{{ r.personal_year.title }} · {{ r.review_date|date:"j M Y" }}</div></div>
+    </div>
+  {% empty %}<p class="hint mb-0">No reviews yet. A monthly review takes ten minutes: what moved, what stalled, what surprised you.</p>{% endfor %}
+</div>
+<p class="hint mt-3">A <strong>Life Review</strong> (e.g. on your birthday) asks “am I still heading in the right direction?” — Personal Year planning asks “what am I going to do about it?”</p>
+{% endblock %}

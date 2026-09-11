@@ -1,0 +1,13 @@
+{% extends "planning/onboarding/_shell.html" %}
+{% load planning_extras %}
+{% block step %}
+<div class="nl-card p-4">
+  <h1 class="h4 mb-1">Priority gaps</h1>
+  <p class="hint mb-3">Gap = Importance − Satisfaction. A positive gap suggests an area <em>may</em> deserve attention. It's a signal to read, not a verdict on what you should fix — importance and your own judgment matter more.</p>
+  <table class="table table-sm align-middle"><thead class="small text-muted"><tr><th>Area</th><th class="text-end">Satisfaction</th><th class="text-end">Importance</th><th class="text-end">Gap</th></tr></thead>
+    <tbody>{% for r in rows %}<tr><td>{{ r.area.name }}</td><td class="text-end score">{{ r.assessment.satisfaction }}</td><td class="text-end score">{{ r.assessment.importance }}</td>
+      <td class="text-end score {{ r.gap|gap_class }}">{{ r.gap|signed }}</td></tr>{% endfor %}</tbody></table>
+  <p class="hint">Example: Satisfaction 9 / Importance 6 = −3. That's not a problem — it may simply be something worth protecting.</p>
+  <form method="post">{% csrf_token %}<button class="btn btn-primary">Continue</button></form>
+</div>
+{% endblock %}

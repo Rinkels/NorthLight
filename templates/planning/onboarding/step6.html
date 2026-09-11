@@ -1,0 +1,14 @@
+{% extends "planning/onboarding/_shell.html" %}
+{% block step %}
+<div class="nl-card p-4">
+  <h1 class="h4 mb-1">North Light &amp; Why</h1>
+  <p class="hint mb-3">For the areas that matter most: what does “good” ultimately look like here (directional, timeless — not a SMART goal), and why does it matter? Leave the rest blank for now.</p>
+  <form method="post" novalidate>{% csrf_token %}{{ formset.management_form }}
+    {% for f in formset %}<div class="py-3 {% if not forloop.first %}border-top{% endif %}">{{ f.id }}
+      <div class="fw-semibold mb-1">{{ f.instance.name }}</div>
+      {% if f.instance.examples %}<div class="hint mb-2">e.g. <em>{{ f.instance.examples.0 }}</em> — <em>{{ f.instance.examples.1 }}</em></div>{% endif %}
+      <label class="form-label small mb-0">North Light</label>{{ f.north_light }}
+      <label class="form-label small mb-0 mt-2">Why does this matter?</label>{{ f.why }}</div>{% endfor %}
+    <button class="btn btn-primary mt-3">Continue</button></form>
+</div>
+{% endblock %}

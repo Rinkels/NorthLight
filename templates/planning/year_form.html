@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Personal Year · NorthLight{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-6">
+  <h1 class="h4 mb-1">{% if year %}Edit {{ year.title }}{% else %}New Personal Year{% endif %}</h1>
+  <p class="hint mb-3">An optional Foundation Period before the start is for baselines, measurements, habit tests and choosing focus.</p>
+  <div class="nl-card p-4"><form method="post" novalidate>{% csrf_token %}{% include "planning/_form.html" %}
+    <div class="d-flex gap-2"><button class="btn btn-primary">Save</button><a class="btn btn-link" href="{% url 'planning:year_list' %}">Cancel</a></div></form></div>
+</div></div>
+{% endblock %}

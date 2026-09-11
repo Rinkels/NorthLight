@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load planning_extras %}
+{% block title %}{{ kind_label }} · NorthLight{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-8">
+  <h1 class="h4 mb-1">{{ kind_label }}</h1>
+  <p class="hint mb-3">{{ year.title }}.
+    {% if kind == 'life' %}Emphasise Satisfaction, Importance, North Light and Why — is this still what you want?{% elif kind == 'annual' %}Rescore, compare start vs end, note lessons and what carries forward.{% else %}Short and honest beats long and thorough.{% endif %}</p>
+  <form method="post" novalidate>{% csrf_token %}
+    <div class="nl-card p-4 mb-4">{% include "planning/_form.html" %}</div>
+    {% if comparison %}
+    <div class="nl-card p-4 mb-4"><h2 class="h6 mb-3">Start vs now</h2>
+      <table class="table table-sm mb-0"><thead class="small text-muted"><tr><th>Area</th><th class="text-end">Start</th><th class="text-end">Now</th><th class="text-end">Δ</th></tr></thead>
+        <tbody>{% for c in comparison %}<tr><td>{{ c.area.name }}</td><td class="text-end score">{{ c.start_satisfaction }}</td><td class="text-end score">{{ c.end_satisfaction }}</td><td class="text-end score">{{ c.delta|signed }}</td></tr>{% endfor %}</tbody></table></div>
+    {% endif %}
+    {% if scores %}
+    <div class="nl-card p-4 mb-4">
+      <h2 class="h6 mb-1">Update scores (optional)</h2><p class="hint mb-3">Only if something has genuinely shifted. Each change is kept in history.</p>
+      {{ scores.management_form }}
+      <table class="table table-sm align-middle mb-0"><thead class="small text-muted"><tr><th>Area</th><th>Satisfaction</th><th>Importance</th></tr></thead><tbody>
+      {% for f in scores %}<tr>{{ f.id }}<td>{{ f.instance.life_area.name }}</td>
+        <td><div class="d-flex align-items-center gap-2">{{ f.satisfaction }}<span class="range-value" data-for="{{ f.satisfaction.id_for_label }}">{{ f.instance.satisfaction }}</span></div></td>
+        <td><div class="d-flex align-items-center gap-2">{{ f.importance }}<span class="range-value" data-for="{{ f.importance.id_for_label }}">{{ f.instance.importance }}</span></div></td></tr>{% endfor %}
+      </tbody></table>
+    </div>
+    {% endif %}
+    <div class="d-flex gap-2"><button class="btn btn-primary">Save review</button><a class="btn btn-link" href="{% url 'planning:review_list' %}">Cancel</a></div>
+  </form>
+</div></div>
+{% endblock %}
+{% block scripts %}<script>document.querySelectorAll('.range-value').forEach(s=>{const i=document.getElementById(s.dataset.for);if(i){i.addEventListener('input',()=>s.textContent=i.value);}});</script>{% endblock %}

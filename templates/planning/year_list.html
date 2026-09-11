@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Personal Years · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div><h1 class="h3 mb-1">Personal Years</h1><div class="hint">Meaningful start and end dates you choose — not “12 months from today”.</div></div>
+  <a class="btn btn-primary btn-sm" href="{% url 'planning:year_create' %}">New Personal Year</a>
+</div>
+<div class="nl-card p-4">
+  <table class="table align-middle mb-0">
+    <thead class="small text-muted"><tr><th>Title</th><th>Dates</th><th>Foundation</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for y in years %}
+      <tr>
+        <td><a href="{% url 'planning:year_detail' y.pk %}">{{ y.title }}</a></td>
+        <td class="small">{{ y.start_date|date:"j M Y" }} – {{ y.end_date|date:"j M Y" }}</td>
+        <td class="small">{% if y.foundation_start_date %}from {{ y.foundation_start_date|date:"j M Y" }}{% else %}—{% endif %}</td>
+        <td><span class="badge bg-{% if y.is_active %}success{% elif y.status == 'planning' %}primary{% else %}secondary{% endif %}">{{ y.get_status_display }}</span></td>
+        <td class="text-end">
+          {% if not y.is_active and y.status != 'archived' %}
+            <form method="post" action="{% url 'planning:year_activate' y.pk %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-link">Make active</button></form>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}<tr><td colspan="5" class="text-muted">No Personal Years yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

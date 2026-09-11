@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load planning_extras %}
+{% block title %}{{ goal.title }} · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+  <div><h1 class="h3 mb-1">{{ goal.title }}</h1>
+    <div class="hint"><a href="{% url 'planning:area_detail' goal.life_area.pk %}">{{ goal.life_area.name }}</a> · {{ goal.get_goal_type_display }} · {{ goal.personal_year.title }}{% if goal.target_date %} · by {{ goal.target_date|date:"j M Y" }}{% endif %}</div>
+    <div class="mt-2"><span class="badge bg-{{ goal.status|status_class }}">{{ goal.get_status_display }}</span> <span class="badge bg-light text-dark border">Priority {{ goal.get_priority_display }}</span></div></div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'planning:goal_edit' goal.pk %}">Edit</a>
+    <form method="post" action="{% url 'planning:goal_status' goal.pk %}" class="d-flex gap-1">{% csrf_token %}
+      {% if goal.is_open %}<button class="btn btn-sm btn-outline-success" name="status" value="complete">Complete</button>
+        <button class="btn btn-sm btn-outline-secondary" name="status" value="paused">Pause</button>
+        <button class="btn btn-sm btn-outline-secondary" name="status" value="dropped">Drop</button>
+      {% else %}<button class="btn btn-sm btn-outline-primary" name="status" value="in_progress">Reopen</button>{% endif %}</form>
+    <form method="post" action="{% url 'planning:goal_delete' goal.pk %}" onsubmit="return confirm('Delete this goal and its milestones?')">{% csrf_token %}<button class="btn btn-sm btn-link text-danger">Delete</button></form>
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="nl-card p-4 mb-4">
+      <div class="d-flex justify-content-between"><h2 class="h6">Progress</h2><span class="score">{{ goal.progress }}%</span></div>
+      <div class="progress mb-2"><div class="progress-bar" style="width:{{ goal.progress }}%"></div></div>
+      {% if goal.has_measure %}<div class="hint">Baseline {{ goal.baseline }} → target {{ goal.target }} {{ goal.target_unit }} · now {{ goal.current_value|default:"—" }}</div>{% endif %}
+      {% if goal.description %}<p class="mt-3 mb-0">{{ goal.description|linebreaksbr }}</p>{% endif %}
+      {% if goal.notes %}<p class="hint mt-2 mb-0">{{ goal.notes|linebreaksbr }}</p>{% endif %}
+      <div class="hint mt-2">Pausing, dropping or rewriting a goal is not failure — priorities change.</div>
+    </div>
+    <div class="nl-card p-4 mb-4">
+      <div class="d-flex justify-content-between mb-3"><h2 class="h6 mb-0">90-day milestones</h2><a class="small" href="{% url 'planning:milestone_create' goal.pk %}">Add milestone</a></div>
+      {% for m in milestones %}
+        <div class="d-flex justify-content-between align-items-center py-2 border-top">
+          <div><a href="{% url 'planning:milestone_edit' m.pk %}" class="text-decoration-none">{{ m.title }}</a>
+            <div class="hint">{% if m.quarter %}Q{{ m.quarter }}{% endif %}{% if m.due_date %} · due {{ m.due_date|date:"j M Y" }}{% endif %}</div></div>
+          <div class="text-end" style="min-width:110px"><span class="badge bg-{{ m.status|status_class }}">{{ m.get_status_display }}</span>
+            <div class="progress mt-1"><div class="progress-bar" style="width:{{ m.progress }}%"></div></div></div>
+        </div>
+      {% empty %}<p class="hint mb-0">What should happen in the next 90 days to move this forward?</p>{% endfor %}
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="nl-card p-4 mb-4">
+      <h2 class="h6 mb-2">Linked goals</h2>
+      <p class="hint">Outcome ← supported by → process. Optional.</p>
+      {% for g in supporting %}<div class="d-flex justify-content-between small py-1"><a href="{% url 'planning:goal_detail' g.pk %}">{{ g.title }}</a>
+        <form method="post" action="{% url 'planning:goal_unlink' goal.pk g.pk %}">{% csrf_token %}<button class="btn btn-link btn-sm p-0 text-muted">unlink</button></form></div>{% endfor %}
+      {% for g in supports %}<div class="small py-1">supports <a href="{% url 'planning:goal_detail' g.pk %}">{{ g.title }}</a></div>{% endfor %}
+      <form method="post" action="{% url 'planning:goal_link' goal.pk %}" class="mt-2 d-flex gap-2">{% csrf_token %}{{ link_form.process_goal }}<button class="btn btn-sm btn-outline-primary">Link</button></form>
+    </div>
+    <div class="nl-card p-4">
+      <div class="d-flex justify-content-between mb-2"><h2 class="h6 mb-0">Supporting habits</h2><a class="small" href="{% url 'planning:habit_create' %}?goal={{ goal.pk }}&area={{ goal.life_area.pk }}">Add</a></div>
+      {% for h in habits %}<div class="small py-1">{{ h.title }} <span class="text-muted">· {{ h.get_frequency_type_display }}</span></div>{% empty %}<p class="hint mb-0">None yet.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

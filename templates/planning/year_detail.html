@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load planning_extras %}
+{% block title %}{{ year.title }} · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+  <div><h1 class="h3 mb-1">{{ year.title }}</h1>
+    <div class="hint">{{ year.start_date|date:"j M Y" }} – {{ year.end_date|date:"j M Y" }} · <span class="badge bg-{% if year.is_active %}success{% else %}secondary{% endif %}">{{ year.get_status_display }}</span>
+      {% if year.foundation_start_date %} · Foundation from {{ year.foundation_start_date|date:"j M Y" }}{% endif %}</div></div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'planning:year_edit' year.pk %}">Edit</a>
+    {% if not year.is_active and year.status != 'archived' %}<form method="post" action="{% url 'planning:year_activate' year.pk %}">{% csrf_token %}<button class="btn btn-sm btn-outline-success">Make active</button></form>{% endif %}
+    {% if year.is_active %}<form method="post" action="{% url 'planning:year_complete' year.pk %}" onsubmit="return confirm('Mark this year completed?')">{% csrf_token %}<button class="btn btn-sm btn-outline-secondary">Mark completed</button></form>{% endif %}
+    {% if year.status == 'completed' %}<a class="btn btn-sm btn-primary" href="{% url 'planning:year_next' year.pk %}">Create next year</a>
+      <a class="btn btn-sm btn-outline-primary" href="{% url 'planning:review_create' 'annual' %}">Annual review</a>{% endif %}
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="nl-card p-4 mb-4">
+      <h2 class="h6 mb-3">Life Areas this year</h2>
+      <table class="table table-sm align-middle mb-0">
+        <thead class="small text-muted"><tr><th>Area</th><th class="text-end">Sat.</th><th class="text-end">Imp.</th><th class="text-end">Gap</th><th>Mode</th></tr></thead>
+        <tbody>{% for a in assessments %}<tr><td><a href="{% url 'planning:area_detail' a.life_area.pk %}">{{ a.life_area.name }}</a></td>
+          <td class="text-end score">{{ a.satisfaction }}</td><td class="text-end score">{{ a.importance }}</td>
+          <td class="text-end score {{ a.priority_gap|gap_class }}">{{ a.priority_gap|signed }}</td>
+          <td><span class="badge bg-{{ a.strategic_mode|mode_class }}">{{ a.get_strategic_mode_display }}</span></td></tr>
+        {% empty %}<tr><td colspan="5" class="text-muted">No assessments.</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+    {% if comparison %}
+    <div class="nl-card p-4 mb-4">
+      <h2 class="h6 mb-3">Start vs now</h2>
+      <table class="table table-sm mb-0"><thead class="small text-muted"><tr><th>Area</th><th class="text-end">Start</th><th class="text-end">Now</th><th class="text-end">Δ</th></tr></thead>
+        <tbody>{% for c in comparison %}<tr><td>{{ c.area.name }}</td><td class="text-end score">{{ c.start_satisfaction }}</td><td class="text-end score">{{ c.end_satisfaction }}</td>
+          <td class="text-end score {% if c.delta > 0 %}text-success{% elif c.delta < 0 %}text-danger{% endif %}">{{ c.delta|signed }}</td></tr>{% endfor %}</tbody></table>
+    </div>
+    {% endif %}
+  </div>
+  <div class="col-lg-5">
+    <div class="nl-card p-4 mb-4">
+      <h2 class="h6 mb-3">Goals</h2>
+      {% for g in goals %}<div class="d-flex justify-content-between small py-1"><a href="{% url 'planning:goal_detail' g.pk %}" class="text-decoration-none">{{ g.title|truncatechars:50 }}</a><span class="badge bg-{{ g.status|status_class }}">{{ g.get_status_display }}</span></div>
+      {% empty %}<p class="hint mb-0">No goals yet.</p>{% endfor %}
+    </div>
+    <div class="nl-card p-4">
+      <h2 class="h6 mb-3">Reflection</h2>
+      <form method="post">{% csrf_token %}{% include "planning/_form.html" with form=reflection_form %}<button class="btn btn-sm btn-outline-primary">Save reflection</button></form>
+    </div>
+  </div>
+</div>
+{% endblock %}

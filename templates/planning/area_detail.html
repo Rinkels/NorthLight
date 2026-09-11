@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load planning_extras %}
+{% block title %}{{ area.name }} · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+  <div>
+    <h1 class="h3 mb-1">{{ area.name }}</h1>
+    {% if assessment %}
+      <div class="d-flex gap-3 align-items-center">
+        <span class="score">Satisfaction <strong>{{ assessment.satisfaction }}</strong></span>
+        <span class="score">Importance <strong>{{ assessment.importance }}</strong></span>
+        <span class="score {{ assessment.priority_gap|gap_class }}">Gap <strong>{{ assessment.priority_gap|signed }}</strong></span>
+        <span class="badge bg-{{ assessment.strategic_mode|mode_class }}">{{ assessment.get_strategic_mode_display }}</span>
+      </div>
+      <div class="hint mt-1">{{ assessment.mode_guidance }}</div>
+    {% else %}<div class="hint">Not assessed for the current year yet.</div>{% endif %}
+  </div>
+  <div class="d-flex gap-2">
+    {% if year %}<a class="btn btn-sm btn-outline-primary" href="{% url 'planning:area_assess' area.pk %}">Edit scores &amp; mode</a>{% endif %}
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'planning:area_edit' area.pk %}">Rename</a>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="nl-card p-4 mb-4">
+      <div class="d-flex justify-content-between mb-3"><h2 class="h6 mb-0">Strategy</h2><a class="small" href="{% url 'planning:area_northlight' area.pk %}">Edit North Light</a></div>
+      <div class="northlight mb-3"><span class="label">North Light</span>
+        {% if area.north_light %}{{ area.north_light }}{% else %}<span class="text-muted">What does “good” ultimately look like here? Directional, not a target.</span>{% endif %}</div>
+      <p class="why mb-3">{% if area.why %}{{ area.why }}{% else %}<span class="text-muted">Why does this matter?</span>{% endif %}</p>
+      {% if assessment %}
+        <div class="small text-muted text-uppercase" style="letter-spacing:.06em">12-Month Vision · {{ year.title }}</div>
+        <p class="mb-0">{% if assessment.annual_vision %}{{ assessment.annual_vision }}{% else %}<span class="text-muted">If this area had genuinely improved by the end of the year, what would be true?</span>{% endif %}</p>
+      {% endif %}
+    </div>
+
+    <div class="nl-card p-4 mb-4">
+      <div class="d-flex justify-content-between mb-3"><h2 class="h6 mb-0">Goals{% if year %} · {{ year.title }}{% endif %}</h2>
+        <a class="small" href="{% url 'planning:goal_create' %}?area={{ area.pk }}">Add goal</a></div>
+      {% for g in goals %}
+        <div class="d-flex justify-content-between align-items-center py-2 border-top">
+          <div><a href="{% url 'planning:goal_detail' g.pk %}" class="text-decoration-none">{{ g.title }}</a>
+            <div class="hint">{{ g.get_goal_type_display }}{% if g.target_date %} · by {{ g.target_date|date:"j M Y" }}{% endif %}</div></div>
+          <div class="text-end" style="min-width:110px"><span class="badge bg-{{ g.status|status_class }}">{{ g.get_status_display }}</span>
+            <div class="progress mt-1"><div class="progress-bar" style="width:{{ g.progress }}%"></div></div></div>
+        </div>
+      {% empty %}<p class="hint mb-0">No goals for this area this year. That can be the right answer.</p>{% endfor %}
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="nl-card p-4 mb-4">
+      <h2 class="h6 mb-3">90-day focus</h2>
+      {% for m in milestones %}
+        <div class="mb-2"><div class="d-flex justify-content-between"><span>{{ m.title }}</span><span class="badge bg-{{ m.status|status_class }}">{{ m.get_status_display }}</span></div>
+          <div class="hint">{{ m.goal.title }}</div></div>
+      {% empty %}<p class="hint mb-0">No active milestones.</p>{% endfor %}
+    </div>
+    <div class="nl-card p-4 mb-4">
+      <div class="d-flex justify-content-between mb-3"><h2 class="h6 mb-0">Habits</h2><a class="small" href="{% url 'planning:habit_create' %}?area={{ area.pk }}">Add</a></div>
+      {% for h in habits %}<div class="small py-1">{{ h.title }} <span class="text-muted">· {{ h.get_frequency_type_display }}</span></div>
+      {% empty %}<p class="hint mb-0">No supporting habits.</p>{% endfor %}
+    </div>
+    <div class="nl-card p-4">
+      <h2 class="h6 mb-3">History</h2>
+      {% for a in history %}
+        <div class="d-flex justify-content-between small py-1"><span>{{ a.personal_year.title }}</span>
+          <span class="score">{{ a.satisfaction }} / {{ a.importance }} <span class="{{ a.priority_gap|gap_class }}">({{ a.priority_gap|signed }})</span> · {{ a.get_strategic_mode_display }}</span></div>
+      {% empty %}<p class="hint mb-0">Previous years will appear here.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

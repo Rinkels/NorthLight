@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Habits · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div><h1 class="h3 mb-1">Habits</h1><div class="hint">Recurring behaviours that support your goals. Simple completion tracking — nothing more.</div></div>
+  <a class="btn btn-primary btn-sm" href="{% url 'planning:habit_create' %}">Add habit</a>
+</div>
+<div class="nl-card p-4">
+  {% for h in active %}
+    <form method="post" action="{% url 'planning:habit_checkin' h.pk %}" class="d-flex justify-content-between align-items-center py-2 {% if not forloop.first %}border-top{% endif %}">{% csrf_token %}
+      <div><a href="{% url 'planning:habit_edit' h.pk %}" class="text-decoration-none">{{ h.title }}</a>
+        <div class="hint">{{ h.life_area.name }}{% if h.goal %} · {{ h.goal.title|truncatechars:40 }}{% endif %} · {{ h.get_frequency_type_display }}{% if h.target_per_period > 1 %} ×{{ h.frequency_target }}{% endif %}</div></div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="small text-muted">{{ h.period_count }}/{{ h.target_per_period }} {{ h.period_label }}</span>
+        <button class="btn btn-sm {% if h.period_done %}btn-success{% else %}btn-outline-secondary{% endif %}">{% if h.period_done and h.target_per_period == 1 %}✓ Done{% else %}Log{% endif %}</button>
+      </div>
+    </form>
+  {% empty %}<p class="hint mb-0">No active habits.</p>{% endfor %}
+</div>
+{% if inactive %}<div class="nl-card p-4 mt-4"><h2 class="h6">Paused</h2>{% for h in inactive %}<div class="small text-muted py-1"><a href="{% url 'planning:habit_edit' h.pk %}">{{ h.title }}</a></div>{% endfor %}</div>{% endif %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{% if goal %}Edit goal{% else %}New goal{% endif %} · NorthLight{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-8">
+  <h1 class="h4 mb-1">{% if goal %}Edit “{{ goal.title }}”{% else %}New goal{% endif %}</h1>
+  <p class="hint mb-3">Goals are evidence that your desired life is becoming more real. Outcome goals are results (often affected by outside factors); process goals are behaviours you control.</p>
+  <div class="nl-card p-4">
+    <form method="post" novalidate>{% csrf_token %}
+      <div class="row">
+        <div class="col-md-8">{% include "planning/_field.html" with field=form.title %}</div>
+        <div class="col-md-4">{% include "planning/_field.html" with field=form.goal_type %}</div>
+        <div class="col-md-6">{% include "planning/_field.html" with field=form.life_area %}</div>
+        <div class="col-md-6">{% include "planning/_field.html" with field=form.personal_year %}</div>
+        <div class="col-12">{% include "planning/_field.html" with field=form.description %}</div>
+        <div class="col-md-3">{% include "planning/_field.html" with field=form.baseline %}</div>
+        <div class="col-md-3">{% include "planning/_field.html" with field=form.target %}</div>
+        <div class="col-md-3">{% include "planning/_field.html" with field=form.target_unit %}</div>
+        <div class="col-md-3">{% include "planning/_field.html" with field=form.current_value %}</div>
+        <div class="col-md-4">{% include "planning/_field.html" with field=form.target_date %}</div>
+        <div class="col-md-4">{% include "planning/_field.html" with field=form.status %}</div>
+        <div class="col-md-4">{% include "planning/_field.html" with field=form.priority %}</div>
+        <div class="col-md-4">{% include "planning/_field.html" with field=form.progress_percentage %}</div>
+        <div class="col-md-8">{% include "planning/_field.html" with field=form.notes %}</div>
+      </div>
+      {% for e in form.non_field_errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+      <div class="d-flex gap-2"><button class="btn btn-primary">Save</button><a class="btn btn-link" href="{% if goal %}{% url 'planning:goal_detail' goal.pk %}{% else %}{% url 'planning:goal_list' %}{% endif %}">Cancel</a></div>
+    </form>
+  </div>
+  <details class="mt-3 hint"><summary>Goal types explained</summary>
+    <ul class="mt-2">{% for k, v in type_help.items %}<li><strong>{{ k.label }}:</strong> {{ v }}</li>{% endfor %}</ul></details>
+</div></div>
+{% endblock %}

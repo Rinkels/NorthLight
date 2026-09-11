@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Life Areas · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div><h1 class="h3 mb-1">Life Areas</h1><div class="hint">Rename, add, archive, reorder. You don't have to use exactly ten.</div></div>
+  <form method="post" action="{% url 'planning:area_restore_defaults' %}">{% csrf_token %}<button class="btn btn-outline-secondary btn-sm">Restore defaults</button></form>
+</div>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="nl-card p-4">
+      <form method="post" action="{% url 'planning:area_reorder' %}" id="reorderForm">{% csrf_token %}
+        <ol class="list-group list-group-numbered list-group-flush" id="areaList">
+          {% for a in active %}
+            <li class="list-group-item d-flex justify-content-between align-items-center" draggable="true" data-id="{{ a.id }}">
+              <input type="hidden" name="order" value="{{ a.id }}">
+              <span><a href="{% url 'planning:area_detail' a.pk %}" class="text-decoration-none">{{ a.name }}</a>
+                {% if a.north_light %}<span class="nl-mark" title="Has a North Light">✦</span>{% endif %}</span>
+              <span class="d-flex gap-2">
+                <a class="btn btn-sm btn-link" href="{% url 'planning:area_edit' a.pk %}">Rename</a>
+                <button class="btn btn-sm btn-link text-muted" type="submit" formaction="{% url 'planning:area_archive' a.pk %}" formmethod="post">Archive</button>
+              </span>
+            </li>
+          {% empty %}<li class="list-group-item text-muted">No active areas.</li>{% endfor %}
+        </ol>
+        <div class="d-flex justify-content-between mt-3"><span class="hint">Drag to reorder, then save.</span><button class="btn btn-sm btn-outline-primary" type="submit">Save order</button></div>
+      </form>
+    </div>
+    {% if archived %}
+    <div class="nl-card p-4 mt-4">
+      <h2 class="h6">Archived</h2>
+      {% for a in archived %}
+        <form method="post" action="{% url 'planning:area_restore' a.pk %}" class="d-flex justify-content-between py-1">{% csrf_token %}
+          <span class="text-muted">{{ a.name }}</span><button class="btn btn-sm btn-link">Restore</button></form>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="col-lg-5">
+    <div class="nl-card p-4">
+      <h2 class="h6 mb-3">Add an area</h2>
+      <form method="post" novalidate>{% csrf_token %}{% include "planning/_form.html" %}<button class="btn btn-primary">Add</button></form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  const list = document.getElementById('areaList'); let dragging = null;
+  list.querySelectorAll('li[draggable]').forEach(li => {
+    li.addEventListener('dragstart', () => { dragging = li; li.classList.add('opacity-50'); });
+    li.addEventListener('dragend', () => { li.classList.remove('opacity-50'); dragging = null; });
+    li.addEventListener('dragover', e => { e.preventDefault(); if (!dragging || dragging === li) return;
+      const r = li.getBoundingClientRect(); const after = (e.clientY - r.top) > r.height / 2;
+      li.parentNode.insertBefore(dragging, after ? li.nextSibling : li); });
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "planning/onboarding/_shell.html" %}
+{% block step %}
+<div class="nl-card p-4">
+  <h1 class="h4 mb-1">12-Month Vision</h1>
+  <p class="hint mb-3">If this area had genuinely improved by the end of this Personal Year, what would be true? Descriptive, not numeric. Focus on the areas you chose to <strong>Improve</strong>; a Protect area's vision can simply be “still true”.</p>
+  <form method="post" novalidate>{% csrf_token %}{{ formset.management_form }}
+    {% for f in formset %}<div class="py-3 {% if not forloop.first %}border-top{% endif %}">{{ f.id }}
+      <div class="fw-semibold mb-1">{{ f.instance.life_area.name }} <span class="hint">· {{ f.instance.get_strategic_mode_display }}</span></div>{{ f.annual_vision }}</div>{% endfor %}
+    <button class="btn btn-primary mt-3">Continue</button></form>
+</div>
+{% endblock %}

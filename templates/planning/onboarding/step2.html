@@ -1,0 +1,17 @@
+{% extends "planning/onboarding/_shell.html" %}
+{% block step %}
+<div class="nl-card p-4">
+  <h1 class="h4 mb-1">Your Life Areas</h1>
+  <p class="hint mb-3">We've started you with ten. Rename or remove any that don't fit, add your own — you don't have to use exactly ten.</p>
+  <ul class="list-group list-group-flush mb-3">
+    {% for a in areas %}
+      <li class="list-group-item d-flex justify-content-between align-items-center px-0">{{ a.name }}
+        <form method="post" class="m-0">{% csrf_token %}<input type="hidden" name="pk" value="{{ a.id }}"><button class="btn btn-link btn-sm text-muted" name="action" value="archive">remove</button></form></li>
+    {% endfor %}
+  </ul>
+  <form method="post" class="d-flex gap-2 align-items-start mb-4" novalidate>{% csrf_token %}
+    <div class="flex-grow-1">{{ form.name }}{% for e in form.name.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+    <button class="btn btn-outline-primary" name="action" value="add">Add area</button></form>
+  <form method="post">{% csrf_token %}<button class="btn btn-primary" name="action" value="next">Continue</button></form>
+</div>
+{% endblock %}

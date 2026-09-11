@@ -1,9 +1,61 @@
 from django.urls import path
 
-from . import views
+from .views import areas, core, goals, onboarding, reviews, years
 
 app_name = "planning"
 
 urlpatterns = [
-    # Populated as the MVP is built (dashboard, life areas, goals, reviews…).
+    path("", core.dashboard, name="dashboard"),
+    path("signup/", core.signup, name="signup"),
+    path("settings/", core.profile, name="profile"),
+    path("history/", core.history, name="history"),
+    path("onboarding/<int:step>/", onboarding.onboarding, name="onboarding"),
+
+    # Life areas
+    path("areas/", areas.area_list, name="area_list"),
+    path("areas/reorder/", areas.area_reorder, name="area_reorder"),
+    path("areas/restore-defaults/", areas.area_restore_defaults, name="area_restore_defaults"),
+    path("areas/<int:pk>/", areas.area_detail, name="area_detail"),
+    path("areas/<int:pk>/edit/", areas.area_edit, name="area_edit"),
+    path("areas/<int:pk>/archive/", areas.area_archive, name="area_archive"),
+    path("areas/<int:pk>/restore/", areas.area_restore, name="area_restore"),
+    path("areas/<int:pk>/north-light/", areas.area_northlight, name="area_northlight"),
+    path("areas/<int:pk>/assess/", areas.area_assess, name="area_assess"),
+
+    # Personal years
+    path("years/", years.year_list, name="year_list"),
+    path("years/new/", years.year_create, name="year_create"),
+    path("years/<int:pk>/", years.year_detail, name="year_detail"),
+    path("years/<int:pk>/edit/", years.year_edit, name="year_edit"),
+    path("years/<int:pk>/activate/", years.year_activate, name="year_activate"),
+    path("years/<int:pk>/complete/", years.year_complete, name="year_complete"),
+    path("years/<int:pk>/archive/", years.year_archive, name="year_archive"),
+    path("years/<int:pk>/next/", years.year_next, name="year_next"),
+
+    # Goals
+    path("goals/", goals.goal_list, name="goal_list"),
+    path("goals/new/", goals.goal_create, name="goal_create"),
+    path("goals/<int:pk>/", goals.goal_detail, name="goal_detail"),
+    path("goals/<int:pk>/edit/", goals.goal_edit, name="goal_edit"),
+    path("goals/<int:pk>/delete/", goals.goal_delete, name="goal_delete"),
+    path("goals/<int:pk>/status/", goals.goal_status, name="goal_status"),
+    path("goals/<int:pk>/link/", goals.goal_link, name="goal_link"),
+    path("goals/<int:pk>/unlink/<int:other_pk>/", goals.goal_unlink, name="goal_unlink"),
+    path("goals/<int:goal_pk>/milestones/new/", goals.milestone_create, name="milestone_create"),
+    path("milestones/<int:pk>/edit/", goals.milestone_edit, name="milestone_edit"),
+    path("milestones/<int:pk>/delete/", goals.milestone_delete, name="milestone_delete"),
+
+    # Habits
+    path("habits/", goals.habit_list, name="habit_list"),
+    path("habits/new/", goals.habit_create, name="habit_create"),
+    path("habits/<int:pk>/edit/", goals.habit_edit, name="habit_edit"),
+    path("habits/<int:pk>/delete/", goals.habit_delete, name="habit_delete"),
+    path("habits/<int:pk>/checkin/", goals.habit_checkin, name="habit_checkin"),
+
+    # Reviews
+    path("reviews/", reviews.review_list, name="review_list"),
+    path("reviews/new/<str:kind>/", reviews.review_create, name="review_create"),
+    path("reviews/<int:pk>/", reviews.review_detail, name="review_detail"),
+    path("reviews/<int:pk>/edit/", reviews.review_edit, name="review_edit"),
+    path("reviews/<int:pk>/delete/", reviews.review_delete, name="review_delete"),
 ]

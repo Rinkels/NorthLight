@@ -1,0 +1,13 @@
+{% extends "planning/onboarding/_shell.html" %}
+{% block step %}
+<div class="nl-card p-4">
+  <h1 class="h4 mb-1">Choose a strategic mode</h1>
+  <p class="hint mb-3">Not every area needs to improve. <strong>Improve · Protect · Maintain · Explore · De-emphasize.</strong> If something is a 9 that matters a 6, the right move is probably to <em>protect</em> it, not push it to a 10.</p>
+  <form method="post" novalidate>{% csrf_token %}{{ formset.management_form }}
+    {% for f in formset %}<div class="row align-items-center py-2 {% if not forloop.first %}border-top{% endif %}">{{ f.id }}
+      <div class="col-md-5">{{ f.instance.life_area.name }} <span class="hint">S{{ f.instance.satisfaction }} / I{{ f.instance.importance }}</span></div>
+      <div class="col-md-7">{{ f.strategic_mode }}</div></div>{% endfor %}
+    <details class="hint mt-3 mb-3"><summary>What the modes mean</summary><ul class="mt-2">{% for k, v in guidance.items %}<li><strong>{{ k.label }}:</strong> {{ v }}</li>{% endfor %}</ul></details>
+    <button class="btn btn-primary">Continue</button></form>
+</div>
+{% endblock %}

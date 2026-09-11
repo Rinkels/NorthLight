@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Next Personal Year · NorthLight{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h4 mb-1">Create the year after {{ previous.title }}</h1>
+  <p class="hint mb-3">Scores carry over as the new starting point (your {{ previous.title }} history stays untouched). Goals are <strong>not</strong> copied automatically — tick only what genuinely deserves another year.</p>
+  <div class="nl-card p-4"><form method="post">{% csrf_token %}
+    {% for g in candidates %}
+      <div class="form-check mb-2"><input class="form-check-input" type="checkbox" name="carry" value="{{ g.id }}" id="g{{ g.id }}">
+        <label class="form-check-label" for="g{{ g.id }}">{{ g.title }} <span class="text-muted small">· {{ g.life_area.name }} · {{ g.get_status_display }}</span></label></div>
+    {% empty %}<p class="hint">No unfinished goals to consider.</p>{% endfor %}
+    <div class="d-flex gap-2 mt-3"><button class="btn btn-primary">Create next year</button><a class="btn btn-link" href="{% url 'planning:year_detail' previous.pk %}">Cancel</a></div>
+  </form></div>
+</div></div>
+{% endblock %}

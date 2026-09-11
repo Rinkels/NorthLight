@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Assess · {{ area.name }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h4 mb-1">{{ area.name }} · {{ year.title }}</h1>
+  <p class="hint mb-3">A low score isn't automatically a problem — importance matters. Not every area needs to improve; protecting what works is legitimate.</p>
+  <div class="nl-card p-4"><form method="post" novalidate>{% csrf_token %}{% include "planning/_form.html" %}
+    <div class="d-flex gap-2"><button class="btn btn-primary">Save</button><a class="btn btn-link" href="{% url 'planning:area_detail' area.pk %}">Cancel</a></div></form></div>
+</div></div>
+{% endblock %}

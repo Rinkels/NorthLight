@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load planning_extras %}
+{% block title %}History · NorthLight{% endblock %}
+{% block content %}
+<h1 class="h3 mb-1">History</h1>
+<p class="hint mb-4">Satisfaction / Importance per Life Area across Personal Years. Past assessments are never overwritten.</p>
+{% if hist.years|length > 1 %}
+<div class="nl-card p-4 mb-4"><canvas id="trend" height="110"></canvas></div>
+{% endif %}
+<div class="nl-card p-4">
+  <div class="table-responsive">
+  <table class="table table-sm align-middle mb-0">
+    <thead class="small text-muted"><tr><th>Area</th>{% for y in hist.years %}<th class="text-end">{{ y.title }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for row in hist.areas %}
+      <tr>
+        <td><a href="{% url 'planning:area_detail' row.area.pk %}">{{ row.area.name }}</a>{% if not row.area.is_active %} <span class="badge bg-light text-muted border">archived</span>{% endif %}</td>
+        {% for c in row.cells %}
+          <td class="text-end score">{% if c %}{{ c.satisfaction }} <span class="text-muted">/ {{ c.importance }}</span> <span class="{{ c.priority_gap|gap_class }} small">({{ c.priority_gap|signed }})</span>{% else %}<span class="text-muted">—</span>{% endif %}</td>
+        {% endfor %}
+      </tr>
+    {% empty %}
+      <tr><td colspan="{{ hist.years|length|add:1 }}" class="text-muted">No history yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="hint mt-2 mb-0">Cells read Satisfaction / Importance (gap).</p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  const el = document.getElementById('trend'); if (!el) return;
+  const c = {{ chart_json|safe }};
+  const palette = ['#2f6f8f','#b8860b','#5b8c5a','#8a6d9b','#c0655b','#4f7f9f','#a08a3a','#6f6f6f','#3a8fa0','#9b7a5b'];
+  new Chart(el, { type: 'line', data: { labels: c.years, datasets: c.series.map((s, i) => ({ ...s, borderColor: palette[i % palette.length], backgroundColor: palette[i % palette.length], tension: .2, spanGaps: true })) },
+    options: { scales: { y: { min: 0, max: 10, ticks: { stepSize: 2 } } }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } } } });
+})();
+</script>
+{% endblock %}
