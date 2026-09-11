@@ -116,8 +116,8 @@
   const wheel = {{ wheel_json|safe }};
   if (!wheel.labels.length) return;
   const ctx = document.getElementById('wheel');
-  const sat = { label: 'Satisfaction', data: wheel.satisfaction, borderColor: '#2f6f8f', backgroundColor: 'rgba(47,111,143,.18)', pointBackgroundColor: '#2f6f8f', borderWidth: 2 };
-  const imp = { label: 'Importance', data: wheel.importance, borderColor: '#b8860b', backgroundColor: 'rgba(184,134,11,.10)', pointBackgroundColor: '#b8860b', borderWidth: 2, borderDash: [4, 3], hidden: false };
+  const sat = { label: 'Satisfaction', data: wheel.satisfaction, borderColor: '#7b61c9', backgroundColor: 'rgba(123,97,201,.16)', pointBackgroundColor: '#7b61c9', borderWidth: 2 };
+  const imp = { label: 'Importance', data: wheel.importance, borderColor: '#d9628f', backgroundColor: 'rgba(217,98,143,.10)', pointBackgroundColor: '#d9628f', borderWidth: 2, borderDash: [4, 3], hidden: false };
   const chart = new Chart(ctx, {
     type: 'radar',
     data: { labels: wheel.labels, datasets: [sat, imp] },

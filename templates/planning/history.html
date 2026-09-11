@@ -33,7 +33,7 @@
 (function () {
   const el = document.getElementById('trend'); if (!el) return;
   const c = {{ chart_json|safe }};
-  const palette = ['#2f6f8f','#b8860b','#5b8c5a','#8a6d9b','#c0655b','#4f7f9f','#a08a3a','#6f6f6f','#3a8fa0','#9b7a5b'];
+  const palette = ['#7b61c9','#d9628f','#5fb3a1','#a58be0','#e89bb8','#8fd0c3','#5e48a8','#b8497a','#3f9b89','#c9b8f0'];
   new Chart(el, { type: 'line', data: { labels: c.years, datasets: c.series.map((s, i) => ({ ...s, borderColor: palette[i % palette.length], backgroundColor: palette[i % palette.length], tension: .2, spanGaps: true })) },
     options: { scales: { y: { min: 0, max: 10, ticks: { stepSize: 2 } } }, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } } } });
 })();

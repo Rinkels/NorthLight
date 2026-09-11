@@ -1,6 +1,27 @@
+import os
+
 from django import template
+from django.conf import settings
+from django.contrib.staticfiles import finders
+from django.templatetags.static import static as static_url
 
 register = template.Library()
+
+
+@register.simple_tag
+def static_v(path: str) -> str:
+    """Static URL with the file's mtime as a cache-buster in DEBUG, so CSS edits
+    show up without a hard refresh. Production should use
+    ManifestStaticFilesStorage instead (hashed filenames)."""
+    url = static_url(path)
+    if settings.DEBUG:
+        found = finders.find(path)
+        if found:
+            try:
+                return f"{url}?v={int(os.path.getmtime(found))}"
+            except OSError:
+                pass
+    return url
 
 STATUS_CLASS = {
     "not_started": "secondary", "in_progress": "primary", "at_risk": "warning",
@@ -8,7 +29,7 @@ STATUS_CLASS = {
 }
 MODE_CLASS = {
     "improve": "primary", "protect": "success", "maintain": "secondary",
-    "explore": "info text-dark", "deemphasize": "light text-muted border",
+    "explore": "info", "deemphasize": "light text-muted border",
 }
 
 
