@@ -193,6 +193,14 @@ class OwnedFKMixin:
         return self
 
 
+MEASURE_HELP = {
+    "baseline": "Where you're starting from. Fixed once set.",
+    "target": "Where you want to end up.",
+    "current_value": "Where you are now. Update this as you go — progress is measured from baseline toward target.",
+    "progress_percentage": "Only used when there are no numbers above; otherwise progress is calculated.",
+}
+
+
 class GoalForm(BootstrapMixin, OwnedFKMixin, forms.ModelForm):
     class Meta:
         model = Goal
@@ -204,6 +212,7 @@ class GoalForm(BootstrapMixin, OwnedFKMixin, forms.ModelForm):
             "description": forms.Textarea(attrs={"rows": 2}),
             "notes": forms.Textarea(attrs={"rows": 2}),
         }
+        help_texts = MEASURE_HELP
 
 
 class QuickGoalForm(BootstrapMixin, OwnedFKMixin, forms.ModelForm):
@@ -214,6 +223,7 @@ class QuickGoalForm(BootstrapMixin, OwnedFKMixin, forms.ModelForm):
         model = Goal
         fields = ("title", "goal_type", "life_area", "personal_year", "target_date", "baseline", "target", "target_unit")
         widgets = {"target_date": forms.DateInput(attrs={"type": "date"}), "personal_year": forms.HiddenInput()}
+        help_texts = MEASURE_HELP
 
 
 class GoalValueForm(BootstrapMixin, forms.ModelForm):
