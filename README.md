@@ -40,6 +40,42 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+### Demo data
+
+Loads the example profile from the product brief (ten scored areas, North
+Lights, goals, 90-day milestones, habits, a review, and a previous year so
+History has a trend). Development only — refuses to run unless `DEBUG=True`.
+
+```bash
+python manage.py load_demo            # user "demo", password "demo-northlight"
+python manage.py load_demo --reset    # wipe that user's planning data first
+```
+
+## Tests
+
+```bash
+python manage.py test planning
+```
+
+Covers cross-user isolation on GET **and** POST/update/delete paths, anonymous
+access, the Priority Gap calculation, Personal Year date/active-year logic, goal
+progress/status rules, ownership on create, onboarding, and a render smoke test
+of every page.
+
+## Routes
+
+| Area | Routes |
+| --- | --- |
+| Auth | `/signup/`, `/accounts/login/`, `/accounts/logout/`, `/accounts/password_reset/…` |
+| Core | `/` dashboard · `/settings/` · `/history/` · `/onboarding/<1–9>/` |
+| Life Areas | `/areas/` · `/areas/<id>/` · `…/edit/` `…/archive/` `…/restore/` `…/north-light/` `…/assess/` · `/areas/reorder/` · `/areas/restore-defaults/` |
+| Personal Years | `/years/` · `/years/new/` · `/years/<id>/` · `…/edit/` `…/activate/` `…/complete/` `…/archive/` `…/next/` |
+| Goals | `/goals/` (filters: year, area, status, mode, type) · `/goals/new/` · `/goals/<id>/` · `…/edit/` `…/delete/` `…/status/` `…/link/` `…/unlink/<id>/` |
+| Milestones | `/goals/<id>/milestones/new/` · `/milestones/<id>/edit/` · `…/delete/` |
+| Habits | `/habits/` · `/habits/new/` · `/habits/<id>/edit/` · `…/delete/` · `…/checkin/` |
+| Reviews | `/reviews/` · `/reviews/new/<monthly|quarterly|annual|life>/` · `/reviews/<id>/` · `…/edit/` `…/delete/` |
+| Admin | `/admin/` (support/dev only) |
+
 ## Non-negotiables
 
 - **Per-user isolation.** Every query and object lookup enforces ownership
