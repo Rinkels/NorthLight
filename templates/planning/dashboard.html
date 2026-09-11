@@ -123,7 +123,7 @@
     data: { labels: wheel.labels, datasets: [sat, imp] },
     options: {
       responsive: true,
-      scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, showLabelBackdrop: false, color: '#9aa0a6' }, grid: { color: '#e9ecef' }, angleLines: { color: '#e9ecef' }, pointLabels: { font: { size: 12 } } } },
+      scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, showLabelBackdrop: false, color: '#8b80a3' }, grid: { color: '#d3c8ea' }, angleLines: { color: '#d3c8ea' }, pointLabels: { font: { size: 12 }, color: '#4a4160' } } },
       plugins: { legend: { display: false } },
       onClick: (evt) => {
         const pts = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);

@@ -4,7 +4,9 @@
    Bootstrap 5.3 is re-themed through its CSS variables so buttons, links,
    badges, focus rings and switches follow the palette without a Sass build. */
 :root {
-  --nl-bg: #faf8fd;            /* lavender-tinted white — barely there */
+  --nl-bg: #faf8fd;            /* lavender-tinted white page ground */
+  --nl-card: #efe9f8;          /* cards: a step darker lilac than the ground */
+  --nl-line: #ddd4ee;          /* borders, chart grid, progress track on lilac */
   --nl-accent: #7b61c9;        /* soft violet: primary, Satisfaction, progress */
   --nl-accent-dark: #6a51b3;
   --nl-accent-soft: #ece7f7;
@@ -20,13 +22,20 @@
   --bs-light-rgb: 250, 248, 253;
   --bs-link-color-rgb: 123, 97, 201;
   --bs-link-hover-color-rgb: 106, 81, 179;
+  --bs-body-bg: #faf8fd;
+  --bs-border-color: var(--nl-line);
 }
 
 body { color: #26223a; background-color: var(--nl-bg); }
 .nl-mark { color: var(--nl-northlight); }
-.navbar { border-color: #ece7f7 !important; }
-.card { border-radius: .75rem; }
-.nl-card { background: #fff; border: 0; box-shadow: 0 1px 3px rgba(80, 60, 140, .08); border-radius: .75rem; }
+.navbar { border-color: #e6def3 !important; }
+.card { border-radius: .75rem; background: var(--nl-card); }
+.nl-card { background: var(--nl-card); border: 0; box-shadow: 0 1px 3px rgba(80, 60, 140, .10); border-radius: .75rem; }
+
+/* Surfaces inside lilac cards stay transparent (Bootstrap paints them body-white). */
+.table { --bs-table-bg: transparent; --bs-table-border-color: var(--nl-line); }
+.list-group { --bs-list-group-bg: transparent; --bs-list-group-border-color: var(--nl-line); }
+.border-top { border-top-color: var(--nl-line) !important; }
 
 /* Buttons */
 .btn-primary {
@@ -74,7 +83,7 @@ body { color: #26223a; background-color: var(--nl-bg); }
 .why { color: var(--nl-muted); font-style: italic; }
 
 /* Subtle progress — no gamification. */
-.progress { height: .4rem; background: var(--nl-accent-soft); }
+.progress { height: .4rem; background: var(--nl-line); }
 .progress-bar { background: var(--nl-accent); }
 
 .stat { font-size: 1.6rem; font-weight: 600; line-height: 1.1; }
