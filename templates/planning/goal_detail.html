@@ -21,7 +21,7 @@
     <div class="nl-card p-4 mb-4">
       <div class="d-flex justify-content-between"><h2 class="h6">Progress</h2><span class="score">{{ goal.progress }}%</span></div>
       <div class="progress mb-2"><div class="progress-bar" style="width:{{ goal.progress }}%"></div></div>
-      {% if goal.has_measure %}<div class="hint">Baseline {{ goal.baseline }} → target {{ goal.target }} {{ goal.target_unit }} · now {{ goal.current_value|default:"—" }}</div>{% endif %}
+      {% if goal.has_measure %}<div class="hint">Baseline {% measure goal.baseline goal.target_unit %} → target {% measure goal.target goal.target_unit %} · now {% measure goal.current_value goal.target_unit %}{% with pct=goal.pct_of_target %}{% if pct is not None %} · <strong>{{ pct }}% of target</strong>{% endif %}{% endwith %}</div>{% endif %}
       {% if goal.description %}<p class="mt-3 mb-0">{{ goal.description|linebreaksbr }}</p>{% endif %}
       {% if goal.notes %}<p class="hint mt-2 mb-0">{{ goal.notes|linebreaksbr }}</p>{% endif %}
       <div class="hint mt-2">Pausing, dropping or rewriting a goal is not failure — priorities change.</div>

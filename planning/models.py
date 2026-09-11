@@ -388,6 +388,17 @@ class Goal(models.Model):
             return int(max(Decimal(0), min(Decimal(1), done)) * 100)
         return int(self.progress_percentage)
 
+    def pct_of_target(self) -> int | None:
+        """Secondary reading for increasing numeric goals with a non-zero start:
+        how close the current value is to the target in absolute terms
+        (165k of 200k → 82%). Distinct from progress(), which measures the
+        journey from baseline. None when it wouldn't be meaningful."""
+        if not self.has_measure or self.current_value is None:
+            return None
+        if self.target <= 0 or self.baseline <= 0 or self.target <= self.baseline:
+            return None
+        return int(max(Decimal(0), min(Decimal(1), self.current_value / self.target)) * 100)
+
     def save(self, *args, **kwargs):
         if self.status == WorkStatus.COMPLETE and not self.completed_date:
             self.completed_date = timezone.localdate()

@@ -22,7 +22,7 @@
       <div class="col-md-6"><a href="{% url 'planning:goal_detail' g.pk %}" class="text-decoration-none">{{ g.title }}</a>
         <div class="hint">{{ g.life_area.name }} · {{ g.get_goal_type_display }} · {{ g.personal_year.title }}{% if g.target_date %} · by {{ g.target_date|date:"j M Y" }}{% endif %}</div></div>
       <div class="col-md-3"><div class="progress"><div class="progress-bar" style="width:{{ g.progress }}%"></div></div>
-        <div class="hint">{{ g.progress }}%{% if g.has_measure %} · {{ g.current_value|default:g.baseline }} → {{ g.target }} {{ g.target_unit }}{% endif %}</div></div>
+        <div class="hint">{{ g.progress }}%{% if g.has_measure %} · {% measure g.current_value|default:g.baseline g.target_unit %} → {% measure g.target g.target_unit %}{% with pct=g.pct_of_target %}{% if pct is not None %} · {{ pct }}% of target{% endif %}{% endwith %}{% endif %}</div></div>
       <div class="col-md-3 text-md-end"><span class="badge bg-{{ g.status|status_class }}">{{ g.get_status_display }}</span> <span class="badge bg-light text-dark border">P{{ g.priority }}</span></div>
     </div>
   {% empty %}<p class="hint mb-0">No goals match. That's fine — focus beats volume.</p>{% endfor %}
