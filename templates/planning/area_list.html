@@ -3,7 +3,10 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-end mb-4">
   <div><h1 class="h3 mb-1">Life Areas</h1><div class="hint">Rename, add, archive, reorder. You don't have to use exactly ten.</div></div>
-  <form method="post" action="{% url 'planning:area_restore_defaults' %}">{% csrf_token %}<button class="btn btn-outline-secondary btn-sm">Restore defaults</button></form>
+  <div class="d-flex gap-2 align-items-center">
+    <a class="btn btn-primary btn-sm" href="{% url 'planning:design_life' %}">Design my life</a>
+    <form method="post" action="{% url 'planning:area_restore_defaults' %}" class="m-0">{% csrf_token %}<button class="btn btn-outline-secondary btn-sm">Restore defaults</button></form>
+  </div>
 </div>
 <div class="row g-4">
   <div class="col-lg-7">

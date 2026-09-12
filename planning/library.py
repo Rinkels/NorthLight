@@ -103,3 +103,104 @@ NORTH_LIGHT_SAMPLES: dict[str, list[tuple[str, str]]] = {
 
 def samples_for(template_key: str) -> list[tuple[str, str]]:
     return NORTH_LIGHT_SAMPLES.get(template_key) or NORTH_LIGHT_SAMPLES[GENERAL_KEY]
+
+
+# --------------------------------------------------------------------------- #
+# Goal suggestions — offered only for areas the user has marked Improve.
+# Baseline and target are deliberately absent: the user must make them concrete.
+# --------------------------------------------------------------------------- #
+
+GOAL_SAMPLES: dict[str, list[dict]] = {
+    "health": [
+        {"title": "Reach and hold a healthy weight", "goal_type": "outcome", "target_unit": "kg",
+         "description": "Set a baseline from today's weight and a target you can hold, not a crash number."},
+        {"title": "Train consistently every week", "goal_type": "process", "target_unit": "sessions per week",
+         "description": "The behaviour you control. Pair it with a habit."},
+        {"title": "Complete a health check-up and act on it", "goal_type": "milestone", "target_unit": "",
+         "description": "One discrete event that removes uncertainty."},
+    ],
+    "relationships": [
+        {"title": "Regular one-to-one time with each person who matters", "goal_type": "process", "target_unit": "times per month",
+         "description": "Ordinary weeks, not just occasions."},
+        {"title": "A shared trip or experience together", "goal_type": "experience", "target_unit": "",
+         "description": "Something you will still talk about in ten years."},
+        {"title": "Keep the weekly family ritual intact", "goal_type": "maintenance", "target_unit": "",
+         "description": "Protecting what already works is a legitimate goal."},
+    ],
+    "friends": [
+        {"title": "See close friends in person regularly", "goal_type": "process", "target_unit": "meet-ups per month",
+         "description": "Frequency matters more than grand plans."},
+        {"title": "Join or re-join a community and show up", "goal_type": "milestone", "target_unit": "",
+         "description": "A club, a team, a group that meets."},
+        {"title": "Host people at home", "goal_type": "process", "target_unit": "times this year",
+         "description": "Being the one who invites."},
+    ],
+    "work": [
+        {"title": "Reach the next level of role, responsibility or income", "goal_type": "outcome", "target_unit": "",
+         "description": "Name the specific step and what would prove it."},
+        {"title": "Ship one piece of work you are genuinely proud of", "goal_type": "milestone", "target_unit": "",
+         "description": "Finished, visible, yours."},
+        {"title": "Protect deep-work time every week", "goal_type": "process", "target_unit": "hours per week",
+         "description": "Blocks in the calendar that survive the week."},
+    ],
+    "finance": [
+        {"title": "Grow savings or investments to a target", "goal_type": "outcome", "target_unit": "$",
+         "description": "Baseline is today's balance; the target is the number that would feel different."},
+        {"title": "Invest a fixed amount every month", "goal_type": "process", "target_unit": "$ per month",
+         "description": "The process goal that drives the outcome."},
+        {"title": "Clear a specific debt", "goal_type": "outcome", "target_unit": "$",
+         "description": "A decreasing target: baseline is what you owe now, target is zero."},
+    ],
+    "time": [
+        {"title": "Keep one weekday evening and one weekend day free each week", "goal_type": "maintenance", "target_unit": "",
+         "description": "Something to protect rather than improve."},
+        {"title": "Cut recurring commitments that no longer earn their place", "goal_type": "milestone", "target_unit": "",
+         "description": "One deliberate pruning pass."},
+        {"title": "Take real holidays, fully offline", "goal_type": "experience", "target_unit": "weeks",
+         "description": "Count the weeks, not the intentions."},
+    ],
+    "learning": [
+        {"title": "Complete a course or qualification", "goal_type": "milestone", "target_unit": "",
+         "description": "One finished thing, not five started ones."},
+        {"title": "Read deliberately", "goal_type": "process", "target_unit": "books",
+         "description": "Pick a number you would actually enjoy."},
+        {"title": "Practise a skill every week", "goal_type": "process", "target_unit": "hours per week",
+         "description": "An instrument, a language, a craft."},
+    ],
+    "creating": [
+        {"title": "Finish and release one project", "goal_type": "milestone", "target_unit": "",
+         "description": "Done and out in the world beats perfect and private."},
+        {"title": "Keep a regular making practice", "goal_type": "process", "target_unit": "sessions per week",
+         "description": "Small, regular, protected."},
+        {"title": "Share work publicly", "goal_type": "process", "target_unit": "pieces",
+         "description": "Posts, prints, performances, releases."},
+    ],
+    "fun": [
+        {"title": "Four genuinely memorable experiences this year", "goal_type": "experience", "target_unit": "experiences",
+         "description": "Decide what counts before the year starts."},
+        {"title": "Try something completely new", "goal_type": "milestone", "target_unit": "",
+         "description": "A sport, a place, a skill you have never tried."},
+        {"title": "A weekly slot for play", "goal_type": "maintenance", "target_unit": "",
+         "description": "Games, sport, music, whatever is purely for enjoyment."},
+    ],
+    "purpose": [
+        {"title": "Give time regularly to a cause that matters", "goal_type": "process", "target_unit": "hours per month",
+         "description": "Consistency over grand gestures."},
+        {"title": "Write down what you stand for and revisit it", "goal_type": "milestone", "target_unit": "",
+         "description": "A page, not a manifesto."},
+        {"title": "Mentor or help someone specific", "goal_type": "outcome", "target_unit": "",
+         "description": "Name the person and what better looks like for them."},
+    ],
+    GENERAL_KEY: [
+        {"title": "One measurable improvement in this area", "goal_type": "outcome", "target_unit": "",
+         "description": "Pick the single number or fact that would show this area is better."},
+        {"title": "A weekly practice that moves this area forward", "goal_type": "process", "target_unit": "times per week",
+         "description": "The behaviour you control."},
+        {"title": "Keep what already works here", "goal_type": "maintenance", "target_unit": "",
+         "description": "Protecting is legitimate."},
+    ],
+}
+
+
+def goal_samples_for(template_key: str) -> list[dict]:
+    return GOAL_SAMPLES.get(template_key) or GOAL_SAMPLES[GENERAL_KEY]

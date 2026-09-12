@@ -1,1 +1,1 @@
-from . import areas, core, export, goals, onboarding, reviews, years  # noqa: F401
+from . import areas, core, design, export, goals, onboarding, reviews, years  # noqa: F401

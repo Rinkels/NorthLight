@@ -60,6 +60,16 @@ step 6 offer them under "Start from an example"; clicking one fills the fields
 client-side (`static/js/northlight.js`) and the user edits from there. Nothing
 is ever saved without the user choosing it.
 
+## Design my life
+
+A guided walk (`planning/views/design.py`), one active area per page, reached
+from the dashboard or Life Areas. Each page offers the North Light samples and,
+**only for areas marked Improve**, three sample goals from `GOAL_SAMPLES` in
+`planning/library.py` with baseline and target deliberately blank. Protect,
+Maintain, Explore and De-emphasize areas get no goal suggestions: not every
+area needs a goal. Nothing is created unless the user ticks it, and the closing
+page lists goals that still need a baseline and target.
+
 ## Data export
 
 Settings → **Export your data**. The JSON export (`planning/export.py`) mirrors
@@ -86,6 +96,7 @@ of every page.
 | --- | --- |
 | Auth | `/signup/`, `/accounts/login/`, `/accounts/logout/`, `/accounts/password_reset/…` |
 | Core | `/` dashboard · `/settings/` · `/history/` · `/onboarding/<1–9>/` |
+| Design my life | `/design/` · `/design/<n>/` (one active area per page) · `/design/done/` |
 | Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |
 | Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |
 | Life Areas | `/areas/` · `/areas/<id>/` · `…/edit/` `…/archive/` `…/restore/` `…/north-light/` `…/assess/` · `/areas/reorder/` · `/areas/restore-defaults/` |

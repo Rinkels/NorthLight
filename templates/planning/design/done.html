@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Design my life · Done{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h3 mb-1">That is a design, not a to-do list</h1>
+  <p class="text-muted mb-4">{{ with_light }} of {{ total }} areas now have a North Light. {{ goals|length }} goal{{ goals|length|pluralize }} for {{ year.title }}.</p>
+
+  {% if unmeasured %}
+    <div class="nl-card p-4 mb-3">
+      <h2 class="h5">Make these concrete</h2>
+      <p class="hint">These goals have no baseline or target yet. A goal without a number is a wish; open each one and set where you are and where you are heading.</p>
+      <ul class="mb-0">{% for g in unmeasured %}<li><a href="{% url 'planning:goal_edit' g.pk %}">{{ g.title }}</a> <span class="text-muted small">· {{ g.life_area.name }}</span></li>{% endfor %}</ul>
+    </div>
+  {% endif %}
+
+  <div class="nl-card p-4 mb-3">
+    <h2 class="h5">What next</h2>
+    <ul class="mb-0">
+      <li>Read the <a href="{% url 'planning:dashboard' %}">Life Wheel</a> once more. Fewer meaningful goals beat many.</li>
+      <li>Break the goals that matter most into <a href="{% url 'planning:goal_list' %}">90-day milestones</a>.</li>
+      <li>Come back to any North Light later from its <a href="{% url 'planning:area_list' %}">Life Area</a>. It is meant to be rewritten as you change.</li>
+    </ul>
+  </div>
+  <p class="hint"><a href="{% url 'planning:design_life' %}">Walk through it again</a></p>
+</div></div>
+{% endblock %}

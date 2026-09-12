@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Design my life · {{ area.name }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-8">
+  <div class="d-flex justify-content-between align-items-center step-nav mb-2">
+    <span>Design my life · {{ index }} of {{ total }}</span>
+    <a href="{% url 'planning:dashboard' %}" class="btn btn-link btn-sm p-0">Stop for now</a>
+  </div>
+  <div class="progress mb-4"><div class="progress-bar" style="width:{{ progress }}%"></div></div>
+
+  <div class="nl-card p-4">
+    <h1 class="h4 mb-1">{{ area.name }}</h1>
+    {% if assessment %}
+      <div class="hint mb-3">Satisfaction {{ assessment.satisfaction }} · Importance {{ assessment.importance }} · <span class="fw-semibold">{{ assessment.get_strategic_mode_display }}</span>. {{ assessment.mode_guidance }}</div>
+    {% else %}
+      <div class="hint mb-3">Not scored yet for {{ year.title }}. <a href="{% url 'planning:area_assess' area.pk %}">Score it</a> to get goal suggestions; the North Light does not need a score.</div>
+    {% endif %}
+
+    <form method="post" novalidate>{% csrf_token %}
+      <h2 class="h6 mt-3">North Light &amp; Why</h2>
+      <p class="hint">Directional and timeless. Start from an example or write your own; you can change it any time.</p>
+      {% include "planning/_northlight_samples.html" with samples=area.samples nl_id=form.north_light.id_for_label why_id=form.why.id_for_label open_samples=samples_open %}
+      {% include "planning/_form.html" %}
+
+      <h2 class="h6 mt-4">Goals for {{ year.title }}</h2>
+      {% if existing_goals %}
+        <div class="hint mb-2">Already here:</div>
+        <ul class="small mb-3">{% for g in existing_goals %}<li><a href="{% url 'planning:goal_detail' g.pk %}">{{ g.title }}</a> <span class="text-muted">· {{ g.get_goal_type_display }}</span></li>{% endfor %}</ul>
+      {% endif %}
+      {% if suggest_goals %}
+        <p class="hint">This area is set to Improve, so here are a few starting points. Tick any that fit. Baseline and target are left for you to fill in, because only you know the real numbers.</p>
+        <div class="d-flex flex-column gap-2 mb-3">
+          {% for s in goal_samples %}
+            <label class="nl-sample d-flex gap-2 align-items-start mb-0">
+              <input type="checkbox" class="form-check-input mt-1" name="goal" value="{{ forloop.counter0 }}">
+              <span><span class="d-block">{{ s.title }} <span class="text-muted small">· {{ s.goal_type|capfirst }}{% if s.target_unit %} · {{ s.target_unit }}{% endif %}</span></span>
+              <span class="why d-block small">{{ s.description }}</span></span>
+            </label>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="hint">{% if assessment %}This area is set to {{ assessment.get_strategic_mode_display }}, so no goals are suggested. Not every area needs a goal.{% else %}No goal suggestions without a score.{% endif %} You can still add one below.</p>
+      {% endif %}
+      <label class="form-label small mb-0" for="custom_goal">Or add your own goal</label>
+      <input type="text" class="form-control mb-3" id="custom_goal" name="custom_goal" maxlength="200" placeholder="Leave blank to add none">
+
+      <div class="d-flex gap-2 align-items-center">
+        <button class="btn btn-primary">{% if index < total %}Save and continue{% else %}Save and finish{% endif %}</button>
+        {% if index < total %}<a class="btn btn-link" href="{% url 'planning:design_life_step' index|add:'1' %}">Skip this area</a>{% else %}<a class="btn btn-link" href="{% url 'planning:design_life_done' %}">Skip this area</a>{% endif %}
+      </div>
+    </form>
+  </div>
+  <div class="d-flex justify-content-between mt-3 step-nav">
+    {% if index > 1 %}<a href="{% url 'planning:design_life_step' index|add:'-1' %}">← Back</a>{% else %}<span></span>{% endif %}
+  </div>
+</div></div>
+{% endblock %}
