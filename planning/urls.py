@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import areas, core, goals, onboarding, reviews, years
+from .views import areas, core, export, goals, onboarding, reviews, years
 
 app_name = "planning"
 
@@ -9,6 +9,10 @@ urlpatterns = [
     path("signup/", core.signup, name="signup"),
     path("settings/", core.profile, name="profile"),
     path("history/", core.history, name="history"),
+    path("export/", export.export_page, name="export"),
+    path("export/json/", export.export_json, name="export_json"),
+    path("export/scores.csv", export.export_scores_csv, name="export_scores_csv"),
+    path("export/goals.csv", export.export_goals_csv, name="export_goals_csv"),
     path("onboarding/<int:step>/", onboarding.onboarding, name="onboarding"),
 
     # Life areas

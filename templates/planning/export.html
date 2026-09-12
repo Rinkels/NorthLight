@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Export your data · NorthLight{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h3 mb-1">Export your data</h1>
+  <p class="text-muted mb-4">Everything you have entered belongs to you. Download it any time; nothing changes in NorthLight when you do.</p>
+
+  <div class="nl-card p-4 mb-3">
+    <h2 class="h5">Complete export (JSON)</h2>
+    <p class="mb-3">One file with your profile, Life Areas and North Lights, every Personal Year with its scores and score history, goals, milestones, habits and check-ins, and reviews. Lossless, and the right choice for a backup or for moving your data elsewhere.</p>
+    <a class="btn btn-primary" href="{% url 'planning:export_json' %}">Download JSON</a>
+  </div>
+
+  <div class="nl-card p-4 mb-3">
+    <h2 class="h5">Spreadsheet extracts (CSV)</h2>
+    <p class="mb-3">Flat tables that open directly in a spreadsheet. Reflections and reviews are not included here; they are in the JSON export.</p>
+    <a class="btn btn-outline-primary me-2" href="{% url 'planning:export_scores_csv' %}">Scores per area per year</a>
+    <a class="btn btn-outline-primary" href="{% url 'planning:export_goals_csv' %}">Goals</a>
+  </div>
+
+  <p class="hint"><a href="{% url 'planning:profile' %}">Back to settings</a></p>
+</div></div>
+{% endblock %}

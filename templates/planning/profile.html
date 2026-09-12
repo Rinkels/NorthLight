@@ -7,7 +7,7 @@
     <form method="post" novalidate>{% csrf_token %}
       {% include "planning/_form.html" %}
       <div class="d-flex justify-content-between align-items-center">
-        <span class="hint">Data export will arrive in a later phase.</span>
+        <a class="hint" href="{% url 'planning:export' %}">Export your data</a>
         <button class="btn btn-primary" type="submit">Save settings</button>
       </div>
     </form>

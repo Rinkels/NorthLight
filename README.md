@@ -51,6 +51,15 @@ python manage.py load_demo            # user "demo", password "demo-northlight"
 python manage.py load_demo --reset    # wipe that user's planning data first
 ```
 
+## Data export
+
+Settings → **Export your data**. The JSON export (`planning/export.py`) mirrors
+the domain hierarchy and is lossless — profile, areas with North Lights, every
+Personal Year with assessments and score snapshots, goals, milestones, habits
+with check-ins, reviews. Two CSVs (scores per area per year, goals) cover the
+spreadsheet cases. Every query is scoped through `owned()`, and tests assert
+that one user's export never contains another's rows.
+
 ## Tests
 
 ```bash
@@ -68,6 +77,8 @@ of every page.
 | --- | --- |
 | Auth | `/signup/`, `/accounts/login/`, `/accounts/logout/`, `/accounts/password_reset/…` |
 | Core | `/` dashboard · `/settings/` · `/history/` · `/onboarding/<1–9>/` |
+| Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |
+| Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |
 | Life Areas | `/areas/` · `/areas/<id>/` · `…/edit/` `…/archive/` `…/restore/` `…/north-light/` `…/assess/` · `/areas/reorder/` · `/areas/restore-defaults/` |
 | Personal Years | `/years/` · `/years/new/` · `/years/<id>/` · `…/edit/` `…/activate/` `…/complete/` `…/archive/` `…/next/` |
 | Goals | `/goals/` (filters: year, area, status, mode, type) · `/goals/new/` · `/goals/<id>/` · `…/edit/` `…/delete/` `…/status/` `…/link/` `…/unlink/<id>/` |
