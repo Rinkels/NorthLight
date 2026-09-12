@@ -51,6 +51,15 @@ python manage.py load_demo            # user "demo", password "demo-northlight"
 python manage.py load_demo --reset    # wipe that user's planning data first
 ```
 
+## North Light starting points
+
+Writing a North Light from a blank box is the hardest moment in onboarding, so
+`planning/library.py` holds three sample (North Light, Why) pairs per default
+area plus a general set for custom areas. The North Light form and onboarding
+step 6 offer them under "Start from an example"; clicking one fills the fields
+client-side (`static/js/northlight.js`) and the user edits from there. Nothing
+is ever saved without the user choosing it.
+
 ## Data export
 
 Settings → **Export your data**. The JSON export (`planning/export.py`) mirrors

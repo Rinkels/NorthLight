@@ -118,7 +118,8 @@ def area_northlight(request, pk):
         form.save()
         messages.success(request, "North Light saved.")
         return redirect("planning:area_detail", pk=area.pk)
-    return render(request, "planning/area_northlight.html", {"form": form, "area": area})
+    return render(request, "planning/area_northlight.html",
+                  {"form": form, "area": area, "samples_open": not area.north_light})
 
 
 @login_required

@@ -6,7 +6,7 @@
   <form method="post" novalidate>{% csrf_token %}{{ formset.management_form }}
     {% for f in formset %}<div class="py-3 {% if not forloop.first %}border-top{% endif %}">{{ f.id }}
       <div class="fw-semibold mb-1">{{ f.instance.name }}</div>
-      {% if f.instance.examples %}<div class="hint mb-2">e.g. <em>{{ f.instance.examples.0 }}</em> — <em>{{ f.instance.examples.1 }}</em></div>{% endif %}
+      {% include "planning/_northlight_samples.html" with samples=f.instance.samples nl_id=f.north_light.id_for_label why_id=f.why.id_for_label %}
       <label class="form-label small mb-0">North Light</label>{{ f.north_light }}
       <label class="form-label small mb-0 mt-2">Why does this matter?</label>{{ f.why }}</div>{% endfor %}
     <button class="btn btn-primary mt-3">Continue</button></form>

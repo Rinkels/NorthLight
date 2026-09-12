@@ -94,3 +94,10 @@ body { color: #26223a; background-color: var(--nl-bg); }
 
 .step-nav { font-size: .85rem; color: var(--nl-muted); }
 .hint { font-size: .85rem; color: var(--nl-muted); }
+
+/* North Light starting points */
+.nl-samples summary { cursor: pointer; list-style: none; }
+.nl-samples summary::before { content: "\25B8 "; }
+.nl-samples[open] summary::before { content: "\25BE "; }
+.nl-sample { background: #fff; border: 1px solid var(--nl-card); border-radius: .5rem; padding: .6rem .8rem; width: 100%; }
+.nl-sample:hover, .nl-sample:focus-visible { border-color: var(--nl-accent); outline: none; }

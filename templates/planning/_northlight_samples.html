@@ -1,0 +1,13 @@
+{# Starting points for a North Light + Why. Expects: samples, nl_id, why_id, optional open_samples. Clicking fills both fields; the user edits from there. #}
+<details class="nl-samples mb-2"{% if open_samples %} open{% endif %}>
+  <summary class="hint">Start from an example</summary>
+  <div class="d-flex flex-column gap-2 mt-2">
+    {% for nl, why in samples %}
+      <button type="button" class="nl-sample text-start" data-sample-target="{{ nl_id }}" data-sample-why-target="{{ why_id }}"
+              data-sample-nl="{{ nl }}" data-sample-why="{{ why }}">
+        <span class="northlight d-block">{{ nl }}</span><span class="why d-block small">{{ why }}</span>
+      </button>
+    {% endfor %}
+  </div>
+  <div class="hint mt-1">Pick one and make it yours. You can edit it any time.</div>
+</details>

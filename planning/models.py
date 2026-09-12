@@ -23,6 +23,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
+from .library import NORTH_LIGHT_SAMPLES, samples_for
+
 SCORE_VALIDATORS = [MinValueValidator(1), MaxValueValidator(10)]
 PCT_VALIDATORS = [MinValueValidator(0), MaxValueValidator(100)]
 
@@ -108,18 +110,8 @@ DEFAULT_LIFE_AREAS = [
     ("purpose", "Purpose & Contribution"),
 ]
 
-NORTH_LIGHT_EXAMPLES = {
-    "health": ("Remain healthy, capable and energetic enough that age does not unnecessarily restrict what I can do.",
-               "Freedom and independence."),
-    "finance": ("Build enough financial independence that paid work increasingly becomes a choice rather than a requirement.",
-                "Choice and control over my time."),
-    "work": ("Do interesting, useful and intellectually challenging work with considerable autonomy.",
-             "Autonomy and mastery."),
-    "creating": ("Regularly turn ideas into real things.",
-                 "Expression, curiosity and the enjoyment of building."),
-    "relationships": ("Stay genuinely close to the people who matter most.",
-                      "Connection with people who matter."),
-}
+# First sample per area, kept for short hints; the full lists live in planning.library.
+NORTH_LIGHT_EXAMPLES = {key: pairs[0] for key, pairs in NORTH_LIGHT_SAMPLES.items() if key}
 
 
 class LifeArea(models.Model):
@@ -145,6 +137,11 @@ class LifeArea(models.Model):
     @property
     def examples(self) -> tuple[str, str] | None:
         return NORTH_LIGHT_EXAMPLES.get(self.template_key)
+
+    @property
+    def samples(self) -> list[tuple[str, str]]:
+        """Starting points for the North Light form; custom areas get the general set."""
+        return samples_for(self.template_key)
 
 
 # --------------------------------------------------------------------------- #
