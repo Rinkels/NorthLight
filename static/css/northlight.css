@@ -105,3 +105,6 @@ body { color: #26223a; background-color: var(--nl-bg); }
 /* Clickable summary cards */
 .nl-card-link { color: inherit; text-decoration: none; transition: box-shadow .15s, transform .15s; }
 .nl-card-link:hover, .nl-card-link:focus-visible { color: inherit; box-shadow: 0 3px 10px rgba(80, 60, 140, .18); transform: translateY(-1px); }
+
+/* Attention card: a quiet nudge, not an alarm */
+.nl-attention { border-left: 4px solid #d9628f; }

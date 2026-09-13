@@ -41,6 +41,46 @@
 
   <!-- Summary cards -->
   <div class="col-lg-5">
+    {% if review_due and review_due.show %}
+    <div class="nl-card nl-attention p-3 mb-3">
+      <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+        <div>
+          <div class="fw-semibold">{{ review_due.label }} {% if review_due.is_overdue %}overdue by {{ review_due.days_overdue }} day{{ review_due.days_overdue|pluralize }}{% elif review_due.days_overdue == 0 %}due today{% else %}due {{ review_due.due_date|date:"j M" }}{% endif %}</div>
+          <div class="hint">{% if review_due.last %}Last one {{ review_due.last.review_date|date:"j M" }}.{% else %}No {{ review_due.label|lower }} yet this year.{% endif %} Ten quiet minutes: what moved, what stalled, what to let go.</div>
+        </div>
+        <a class="btn btn-primary btn-sm" href="{% url 'planning:review_create' review_due.kind %}">Start review</a>
+      </div>
+    </div>
+    {% endif %}
+    {% if stale_goals or stale_habits %}
+    <div class="nl-card p-3 mb-3">
+      <h2 class="h6 mb-1">Drifting</h2>
+      <p class="hint mb-2">Not touched for a while. Updating, pausing or dropping are all fine answers; the point is to decide.</p>
+      {% for s in stale_goals %}
+        <div class="d-flex justify-content-between align-items-center gap-2 py-1 {% if not forloop.first %}border-top{% endif %}">
+          <div class="small"><a href="{% url 'planning:goal_detail' s.goal.pk %}" class="text-decoration-none">{{ s.goal.title|truncatechars:48 }}</a>
+            <div class="hint">{{ s.goal.life_area.name }} · not updated for {{ s.days }} days</div></div>
+          <form method="post" action="{% url 'planning:goal_status' s.goal.pk %}" class="d-flex gap-1 m-0">{% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'planning:dashboard' %}">
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'planning:goal_edit' s.goal.pk %}">Update</a>
+            <button class="btn btn-outline-secondary btn-sm" name="status" value="paused">Pause</button>
+            <button class="btn btn-outline-secondary btn-sm" name="status" value="dropped">Drop</button>
+          </form>
+        </div>
+      {% endfor %}
+      {% for s in stale_habits %}
+        <div class="d-flex justify-content-between align-items-center gap-2 py-1 border-top">
+          <div class="small"><a href="{% url 'planning:habit_edit' s.habit.pk %}" class="text-decoration-none">{{ s.habit.title|truncatechars:48 }}</a>
+            <div class="hint">{{ s.habit.life_area.name }} · {% if s.days %}no check-in for {{ s.days }} days{% else %}never checked in{% endif %}</div></div>
+          <form method="post" action="{% url 'planning:habit_checkin' s.habit.pk %}" class="d-flex gap-1 m-0">{% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'planning:dashboard' %}">
+            <button class="btn btn-outline-primary btn-sm">Done today</button>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'planning:habit_edit' s.habit.pk %}">Pause</a>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="row g-3">
       <div class="col-6"><a class="nl-card nl-card-link d-block p-3" href="{% if year %}{% url 'planning:year_detail' year.pk %}{% else %}{% url 'planning:year_list' %}{% endif %}"><div class="stat">{% if year %}{{ year.days_remaining }}{% else %}—{% endif %}</div><div class="stat-label">Days remaining</div>
         {% if year %}<div class="progress mt-2"><div class="progress-bar" style="width:{{ year.progress_pct }}%"></div></div>{% endif %}</a></div>

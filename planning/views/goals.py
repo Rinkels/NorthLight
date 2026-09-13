@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
+from datetime import timedelta
+
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -14,7 +16,7 @@ from ..models import (
     GOAL_TYPE_HELP, Goal, GoalRelationship, GoalType, Habit, HabitCheckin, LifeArea,
     LifeAreaAssessment, Milestone, PersonalYear, StrategicMode, WorkStatus,
 )
-from ..services import current_year
+from ..services import STALE_GOAL_DAYS, current_year
 
 
 # --------------------------------------------------------------------------- #
@@ -43,7 +45,9 @@ def goal_list(request):
             .values_list("personal_year_id", "life_area_id")
         keep = [g.id for g in qs if (g.personal_year_id, g.life_area_id) in set(pairs)]
         qs = qs.filter(id__in=keep)
+    stale_before = timezone.now() - timedelta(days=STALE_GOAL_DAYS)
     return render(request, "planning/goal_list.html", {
+        "stale_before": stale_before,
         "goals": qs, "filters": f,
         "years": owned(PersonalYear, user), "areas": owned(LifeArea, user).filter(is_active=True),
         "statuses": WorkStatus.choices, "modes": StrategicMode.choices, "types": GoalType.choices,

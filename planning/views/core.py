@@ -12,7 +12,10 @@ from django.views.decorators.http import require_http_methods
 from ..access import owned, profile_for
 from ..forms import ProfileForm, ScoreFormSet, SignUpForm
 from ..models import LifeArea, LifeAreaAssessment, PersonalYear
-from ..services import current_year, dashboard_data, priority_rows, save_changed_scores, score_history
+from ..services import (
+    current_year, dashboard_data, next_review_due, priority_rows, save_changed_scores, score_history, stale_goals,
+    stale_habits,
+)
 
 
 @require_http_methods(["GET", "POST"])
@@ -52,6 +55,9 @@ def dashboard(request):
         "wheel_json": json.dumps(data.wheel),
         "profile": prof,
         "scores": scores if scores is not None and scores.total_form_count() else None,
+        "review_due": next_review_due(request.user, data.year),
+        "stale_goals": stale_goals(request.user, data.year),
+        "stale_habits": stale_habits(request.user),
     })
 
 

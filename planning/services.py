@@ -15,8 +15,8 @@ from django.utils import timezone
 
 from .access import owned, profile_for
 from .models import (
-    DEFAULT_LIFE_AREAS, Goal, Habit, LifeArea, LifeAreaAssessment, Milestone,
-    OPEN_STATUSES, PersonalYear, StrategicMode, UserProfile, WorkStatus,
+    DEFAULT_LIFE_AREAS, Goal, Habit, HabitCheckin, LifeArea, LifeAreaAssessment, Milestone,
+    OPEN_STATUSES, PersonalYear, Review, ReviewType, StrategicMode, UserProfile, WorkStatus,
 )
 
 
@@ -257,6 +257,120 @@ def save_changed_scores(formset, year: PersonalYear, source: str) -> int:
             f.save().snapshot(source=source)
             changed += 1
     return changed
+
+
+# --------------------------------------------------------------------------- #
+# Attention: review cadence and staleness. Questions, never verdicts.
+# --------------------------------------------------------------------------- #
+
+STALE_GOAL_DAYS = 42      # an open goal untouched for six weeks is drifting
+STALE_HABIT_DAYS = 14     # an active habit with no check-in for two weeks
+REVIEW_SOON_DAYS = 7      # show the review prompt this many days ahead
+
+
+def add_months(d: date, months: int) -> date:
+    month = d.month - 1 + months
+    year = d.year + month // 12
+    month = month % 12 + 1
+    return _safe_day(year, month, d.day)
+
+
+def _safe_day(year: int, month: int, day: int) -> date:
+    while True:
+        try:
+            return date(year, month, day)
+        except ValueError:
+            day -= 1
+
+
+@dataclass
+class ReviewDue:
+    kind: str                 # monthly / quarterly / annual
+    due_date: date
+    last: Review | None
+    today: date
+
+    @property
+    def days_overdue(self) -> int:
+        return (self.today - self.due_date).days
+
+    @property
+    def is_overdue(self) -> bool:
+        return self.days_overdue > 0
+
+    @property
+    def is_soon(self) -> bool:
+        return -REVIEW_SOON_DAYS <= self.days_overdue <= 0
+
+    @property
+    def show(self) -> bool:
+        return self.days_overdue >= -REVIEW_SOON_DAYS
+
+    @property
+    def label(self) -> str:
+        return dict(ReviewType.choices)[self.kind]
+
+
+def next_review_due(user, year: PersonalYear | None, today: date | None = None) -> ReviewDue | None:
+    """When the next review on the profile's cadence falls due for `year`:
+    one cadence-length after the last review of that type, or after the year
+    start if there is none. Past the year end, the Annual Review is due
+    instead (once). None when there is no year or the year is over and reviewed."""
+    today = today or timezone.localdate()
+    if year is None or today < year.start_date:
+        return None
+    kind = profile_for(user).review_cadence
+    step = 1 if kind == UserProfile.CADENCE_MONTHLY else 3
+    reviews = owned(Review, user).filter(personal_year=year)
+    last = reviews.filter(review_type=kind).order_by("-review_date").first()
+    due = add_months(last.review_date if last else year.start_date, step)
+    if due <= year.end_date:
+        return ReviewDue(kind=kind, due_date=due, last=last, today=today)
+    annual = reviews.filter(review_type=ReviewType.ANNUAL).order_by("-review_date").first()
+    if annual:
+        return None
+    return ReviewDue(kind=ReviewType.ANNUAL, due_date=year.end_date, last=last, today=today)
+
+
+@dataclass
+class StaleGoal:
+    goal: Goal
+    days: int
+
+
+@dataclass
+class StaleHabit:
+    habit: Habit
+    days: int | None      # None = never checked in
+
+
+def stale_goals(user, year: PersonalYear | None, today: date | None = None) -> list[StaleGoal]:
+    """Open goals for `year` not touched (any save) for STALE_GOAL_DAYS."""
+    if year is None:
+        return []
+    today = today or timezone.localdate()
+    cutoff = today - timedelta(days=STALE_GOAL_DAYS)
+    qs = owned(Goal, user).filter(personal_year=year, status__in=OPEN_STATUSES).select_related("life_area")
+    return sorted(
+        [StaleGoal(g, (today - g.updated_at.date()).days) for g in qs if g.updated_at.date() <= cutoff],
+        key=lambda s: -s.days,
+    )
+
+
+def stale_habits(user, today: date | None = None) -> list[StaleHabit]:
+    """Active habits with no check-in for STALE_HABIT_DAYS (or ever, once the
+    habit is older than that)."""
+    today = today or timezone.localdate()
+    cutoff = today - timedelta(days=STALE_HABIT_DAYS)
+    out = []
+    for h in owned(Habit, user).filter(is_active=True).select_related("life_area"):
+        last = h.checkins.order_by("-date").first()
+        if last is None:
+            if h.created_at.date() <= cutoff:
+                out.append(StaleHabit(h, None))
+        elif last.date <= cutoff:
+            out.append(StaleHabit(h, (today - last.date).days))
+    return out
 
 
 # --------------------------------------------------------------------------- #
