@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 from ..access import get_owned_or_404, owned
 from ..forms import ReviewForm, ScoreFormSet
 from ..models import LifeAreaAssessment, PersonalYear, Review, ReviewType
-from ..services import current_year, ensure_assessments, start_vs_end
+from ..services import save_changed_scores, current_year, ensure_assessments, start_vs_end
 
 SCORE_REVIEWS = (ReviewType.MONTHLY, ReviewType.QUARTERLY, ReviewType.ANNUAL, ReviewType.LIFE)
 
@@ -54,10 +54,7 @@ def review_create(request, kind):
         review.personal_year = year
         review.review_type = kind
         review.save()
-        for f in scores:
-            if f.has_changed():
-                a = f.save()
-                a.snapshot(source=f"{kind} review")
+        save_changed_scores(scores, year, source=f"{kind} review")
         messages.success(request, f"{review.get_review_type_display()} saved.")
         return redirect("planning:review_detail", pk=review.pk)
     return render(request, "planning/review_form.html", {

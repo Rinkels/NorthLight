@@ -113,7 +113,7 @@ class PageSmokeTests(TestCase):
             ("area_northlight", [s.area.pk]), ("area_assess", [s.area.pk]),
             ("year_list", []), ("year_create", []), ("year_detail", [s.year.pk]), ("year_edit", [s.year.pk]), ("year_next", [s.year.pk]),
             ("goal_list", []), ("goal_create", []), ("goal_detail", [s.goal.pk]), ("goal_edit", [s.goal.pk]),
-            ("milestone_create", [s.goal.pk]), ("milestone_edit", [s.milestone.pk]),
+            ("milestone_create", [s.goal.pk]), ("milestone_edit", [s.milestone.pk]), ("milestone_list", []),
             ("habit_list", []), ("habit_create", []), ("habit_edit", [s.habit.pk]),
             ("review_list", []), ("review_detail", [s.review.pk]), ("review_edit", [s.review.pk]),
         ] + [("review_create", [k]) for k in ("monthly", "quarterly", "annual", "life")] \

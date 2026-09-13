@@ -101,3 +101,7 @@ body { color: #26223a; background-color: var(--nl-bg); }
 .nl-samples[open] summary::before { content: "\25BE "; }
 .nl-sample { background: #fff; border: 1px solid var(--nl-card); border-radius: .5rem; padding: .6rem .8rem; width: 100%; }
 .nl-sample:hover, .nl-sample:focus-visible { border-color: var(--nl-accent); outline: none; }
+
+/* Clickable summary cards */
+.nl-card-link { color: inherit; text-decoration: none; transition: box-shadow .15s, transform .15s; }
+.nl-card-link:hover, .nl-card-link:focus-visible { color: inherit; box-shadow: 0 3px 10px rgba(80, 60, 140, .18); transform: translateY(-1px); }

@@ -246,6 +246,19 @@ def priority_rows(rows: list[AreaRow]) -> list[AreaRow]:
     return sorted(scored, key=lambda r: (-(r.gap or 0), -r.assessment.importance, r.area.sort_order))
 
 
+def save_changed_scores(formset, year: PersonalYear, source: str) -> int:
+    """Persist changed rows of a ScoreFormSet for `year`, snapshotting each.
+    Rows whose assessment does not belong to `year` (a forged id) are ignored,
+    so a formset can never touch another user's scores. Returns the count."""
+    allowed = set(LifeAreaAssessment.objects.filter(personal_year=year).values_list("pk", flat=True))
+    changed = 0
+    for f in formset:
+        if f.has_changed() and f.instance.pk in allowed:
+            f.save().snapshot(source=source)
+            changed += 1
+    return changed
+
+
 # --------------------------------------------------------------------------- #
 # History
 # --------------------------------------------------------------------------- #

@@ -95,14 +95,14 @@ of every page.
 | Area | Routes |
 | --- | --- |
 | Auth | `/signup/`, `/accounts/login/`, `/accounts/logout/`, `/accounts/password_reset/…` |
-| Core | `/` dashboard · `/settings/` · `/history/` · `/onboarding/<1–9>/` |
+| Core | `/` dashboard · `/scores/` (POST, update scores from the dashboard) · `/settings/` · `/history/` · `/onboarding/<1–9>/` |
 | Design my life | `/design/` · `/design/<n>/` (one active area per page) · `/design/done/` |
 | Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |
 | Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |
 | Life Areas | `/areas/` · `/areas/<id>/` · `…/edit/` `…/archive/` `…/restore/` `…/north-light/` `…/assess/` · `/areas/reorder/` · `/areas/restore-defaults/` |
 | Personal Years | `/years/` · `/years/new/` · `/years/<id>/` · `…/edit/` `…/activate/` `…/complete/` `…/archive/` `…/next/` |
 | Goals | `/goals/` (filters: year, area, status, mode, type) · `/goals/new/` · `/goals/<id>/` · `…/edit/` `…/delete/` `…/status/` `…/link/` `…/unlink/<id>/` |
-| Milestones | `/goals/<id>/milestones/new/` · `/milestones/<id>/edit/` · `…/delete/` |
+| Milestones | `/milestones/` (`?all=1` for every year) · `/goals/<id>/milestones/new/` · `/milestones/<id>/edit/` · `…/delete/` |
 | Habits | `/habits/` · `/habits/new/` · `/habits/<id>/edit/` · `…/delete/` · `…/checkin/` |
 | Reviews | `/reviews/` · `/reviews/new/<monthly|quarterly|annual|life>/` · `/reviews/<id>/` · `…/edit/` `…/delete/` |
 | Admin | `/admin/` (support/dev only) |

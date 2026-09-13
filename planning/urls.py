@@ -8,6 +8,7 @@ urlpatterns = [
     path("", core.dashboard, name="dashboard"),
     path("signup/", core.signup, name="signup"),
     path("settings/", core.profile, name="profile"),
+    path("scores/", core.dashboard_scores, name="dashboard_scores"),
     path("history/", core.history, name="history"),
     path("design/", design.design_life, name="design_life"),
     path("design/<int:index>/", design.design_life, name="design_life_step"),
@@ -49,6 +50,7 @@ urlpatterns = [
     path("goals/<int:pk>/link/", goals.goal_link, name="goal_link"),
     path("goals/<int:pk>/unlink/<int:other_pk>/", goals.goal_unlink, name="goal_unlink"),
     path("goals/<int:goal_pk>/milestones/new/", goals.milestone_create, name="milestone_create"),
+    path("milestones/", goals.milestone_list, name="milestone_list"),
     path("milestones/<int:pk>/edit/", goals.milestone_edit, name="milestone_edit"),
     path("milestones/<int:pk>/delete/", goals.milestone_delete, name="milestone_delete"),
 

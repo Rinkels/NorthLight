@@ -10,9 +10,9 @@ from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
 
 from ..access import owned, profile_for
-from ..forms import ProfileForm, SignUpForm
-from ..models import LifeArea, PersonalYear
-from ..services import dashboard_data, priority_rows, score_history
+from ..forms import ProfileForm, ScoreFormSet, SignUpForm
+from ..models import LifeArea, LifeAreaAssessment, PersonalYear
+from ..services import current_year, dashboard_data, priority_rows, save_changed_scores, score_history
 
 
 @require_http_methods(["GET", "POST"])
@@ -45,12 +45,36 @@ def dashboard(request):
     if not prof.onboarding_complete and not owned(LifeArea, request.user).exists():
         return redirect("planning:onboarding", step=prof.onboarding_step or 1)
     data = dashboard_data(request.user)
+    scores = ScoreFormSet(prefix="scores", queryset=_score_queryset(data.year)) if data.year else None
     return render(request, "planning/dashboard.html", {
         "data": data,
         "priority": priority_rows(data.rows)[:6],
         "wheel_json": json.dumps(data.wheel),
         "profile": prof,
+        "scores": scores if scores is not None and scores.total_form_count() else None,
     })
+
+
+def _score_queryset(year):
+    return (LifeAreaAssessment.objects.filter(personal_year=year, life_area__is_active=True)
+            .select_related("life_area").order_by("life_area__sort_order", "life_area_id"))
+
+
+@login_required
+@require_http_methods(["POST"])
+def dashboard_scores(request):
+    """Update Satisfaction / Importance from the dashboard. Only changed rows
+    are saved, and each change is snapshotted so history is never lost."""
+    year = current_year(request.user)
+    if year is None:
+        return redirect("planning:dashboard")
+    scores = ScoreFormSet(request.POST, prefix="scores", queryset=_score_queryset(year))
+    if scores.is_valid():
+        changed = save_changed_scores(scores, year, source="dashboard")
+        messages.success(request, f"{changed} score{'s' if changed != 1 else ''} updated." if changed else "No scores changed.")
+    else:
+        messages.error(request, "Scores could not be saved.")
+    return redirect("planning:dashboard")
 
 
 @login_required

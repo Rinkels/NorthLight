@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load planning_extras %}
+{% block title %}90-day milestones · NorthLight{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-4">
+  <div><h1 class="h3 mb-1">90-day milestones</h1><div class="hint">The concrete steps that make an annual goal actionable. Add one from its goal's page.</div></div>
+  {% if year %}<a class="small" href="{% url 'planning:milestone_list' %}{% if not show_all %}?all=1{% endif %}">{% if show_all %}Only {{ year.title }}{% else %}All years{% endif %}</a>{% endif %}
+</div>
+<div class="nl-card p-4">
+  <h2 class="h6 mb-3">Open</h2>
+  {% for m in open %}
+    <div class="py-2 {% if not forloop.first %}border-top{% endif %}">
+      <div class="d-flex justify-content-between align-items-center">
+        <a href="{% url 'planning:milestone_edit' m.pk %}" class="text-decoration-none">{{ m.title }}</a>
+        <span class="badge bg-{{ m.status|status_class }}">{{ m.get_status_display }}</span>
+      </div>
+      <div class="hint"><a href="{% url 'planning:goal_detail' m.goal.pk %}">{{ m.goal.title|truncatechars:60 }}</a> · {{ m.goal.life_area.name }}{% if m.due_date %} · due {{ m.due_date|date:"j M Y" }}{% endif %}{% if m.quarter %} · Q{{ m.quarter }}{% endif %}</div>
+      <div class="progress mt-1"><div class="progress-bar" style="width:{{ m.progress }}%"></div></div>
+    </div>
+  {% empty %}<p class="hint mb-0">No open milestones. Break an annual goal into a 90-day step from its page.</p>{% endfor %}
+</div>
+{% if closed %}
+<div class="nl-card p-4 mt-4"><h2 class="h6 mb-2">Completed, paused or dropped</h2>
+  {% for m in closed %}<div class="small py-1 d-flex justify-content-between"><span><a href="{% url 'planning:milestone_edit' m.pk %}">{{ m.title }}</a> <span class="text-muted">· {{ m.goal.life_area.name }}</span></span><span class="badge bg-{{ m.status|status_class }}">{{ m.get_status_display }}</span></div>{% endfor %}
+</div>
+{% endif %}
+{% endblock %}

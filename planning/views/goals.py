@@ -174,6 +174,21 @@ def milestone_delete(request, pk):
 # --------------------------------------------------------------------------- #
 
 @login_required
+def milestone_list(request):
+    """All 90-day milestones, open ones first by due date, then the rest."""
+    year = current_year(request.user)
+    qs = owned(Milestone, request.user).select_related("goal", "goal__life_area", "goal__personal_year")
+    if year and not request.GET.get("all"):
+        qs = qs.filter(goal__personal_year=year)
+    ms = list(qs)
+    return render(request, "planning/milestone_list.html", {
+        "open": sorted([m for m in ms if m.is_open], key=lambda m: (m.due_date is None, m.due_date or timezone.localdate())),
+        "closed": [m for m in ms if not m.is_open],
+        "year": year, "show_all": bool(request.GET.get("all")),
+    })
+
+
+@login_required
 def habit_list(request):
     habits = owned(Habit, request.user).select_related("life_area", "goal")
     return render(request, "planning/habit_list.html", {

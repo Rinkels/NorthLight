@@ -42,14 +42,28 @@
   <!-- Summary cards -->
   <div class="col-lg-5">
     <div class="row g-3">
-      <div class="col-6"><div class="nl-card p-3"><div class="stat">{% if year %}{{ year.days_remaining }}{% else %}—{% endif %}</div><div class="stat-label">Days remaining</div>
-        {% if year %}<div class="progress mt-2"><div class="progress-bar" style="width:{{ year.progress_pct }}%"></div></div>{% endif %}</div></div>
-      <div class="col-6"><div class="nl-card p-3"><div class="stat">{{ data.goals_done }}<span class="text-muted fs-6">/{{ data.goals_total }}</span></div><div class="stat-label">Goals completed</div></div></div>
-      <div class="col-6"><div class="nl-card p-3"><div class="stat">{{ data.milestones|length }}</div><div class="stat-label">Active 90-day milestones</div></div></div>
-      <div class="col-6"><div class="nl-card p-3"><div class="stat">{{ data.habits|length }}</div><div class="stat-label">Habits tracked</div></div></div>
-      <div class="col-6"><div class="nl-card p-3"><div class="stat text-primary">{{ data.improve_count }}</div><div class="stat-label">Areas to improve</div></div></div>
-      <div class="col-6"><div class="nl-card p-3"><div class="stat text-success">{{ data.protect_count }}</div><div class="stat-label">Areas to protect</div></div></div>
+      <div class="col-6"><a class="nl-card nl-card-link d-block p-3" href="{% if year %}{% url 'planning:year_detail' year.pk %}{% else %}{% url 'planning:year_list' %}{% endif %}"><div class="stat">{% if year %}{{ year.days_remaining }}{% else %}—{% endif %}</div><div class="stat-label">Days remaining</div>
+        {% if year %}<div class="progress mt-2"><div class="progress-bar" style="width:{{ year.progress_pct }}%"></div></div>{% endif %}</a></div>
+      <div class="col-6"><a class="nl-card nl-card-link d-block p-3" href="{% url 'planning:goal_list' %}"><div class="stat">{{ data.goals_done }}<span class="text-muted fs-6">/{{ data.goals_total }}</span></div><div class="stat-label">Goals completed</div></a></div>
+      <div class="col-6"><a class="nl-card nl-card-link d-block p-3" href="{% url 'planning:milestone_list' %}"><div class="stat">{{ data.milestones|length }}</div><div class="stat-label">Active 90-day milestones</div></a></div>
+      <div class="col-6"><a class="nl-card nl-card-link d-block p-3" href="{% url 'planning:habit_list' %}"><div class="stat">{{ data.habits|length }}</div><div class="stat-label">Habits tracked</div></a></div>
+      <div class="col-6"><a class="nl-card nl-card-link d-block p-3" href="{% url 'planning:goal_list' %}?mode=improve"><div class="stat text-primary">{{ data.improve_count }}</div><div class="stat-label">Areas to improve</div></a></div>
+      <div class="col-6"><a class="nl-card nl-card-link d-block p-3" href="{% url 'planning:goal_list' %}?mode=protect"><div class="stat text-success">{{ data.protect_count }}</div><div class="stat-label">Areas to protect</div></a></div>
     </div>
+
+    {% if scores %}
+    <div class="nl-card p-4 mt-4">
+      <form method="post" action="{% url 'planning:dashboard_scores' %}">{% csrf_token %}{{ scores.management_form }}
+        <h2 class="h6 mb-1">Update scores</h2><p class="hint mb-3">Only if something has genuinely shifted. Each change is kept in history and the wheel redraws.</p>
+        <table class="table table-sm align-middle mb-3"><thead class="small text-muted"><tr><th>Area</th><th>Satisfaction</th><th>Importance</th></tr></thead><tbody>
+        {% for f in scores %}<tr>{{ f.id }}<td class="small">{{ f.instance.life_area.name }}</td>
+          <td><div class="d-flex align-items-center gap-2">{{ f.satisfaction }}<span class="range-value" data-for="{{ f.satisfaction.id_for_label }}">{{ f.instance.satisfaction }}</span></div></td>
+          <td><div class="d-flex align-items-center gap-2">{{ f.importance }}<span class="range-value" data-for="{{ f.importance.id_for_label }}">{{ f.instance.importance }}</span></div></td></tr>{% endfor %}
+        </tbody></table>
+        <button class="btn btn-outline-primary btn-sm">Save scores</button>
+      </form>
+    </div>
+    {% endif %}
   </div>
 
   <!-- Priority areas -->
