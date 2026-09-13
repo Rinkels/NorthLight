@@ -70,6 +70,16 @@ Maintain, Explore and De-emphasize areas get no goal suggestions: not every
 area needs a goal. Nothing is created unless the user ticks it, and the closing
 page lists goals that still need a baseline and target.
 
+## Paying attention
+
+Goals must not become wishes in a database, so the dashboard asks questions
+rather than issuing verdicts: a review-due prompt driven by the profile's
+cadence (`services.next_review_due`), and a **Drifting** card listing open
+goals untouched for six weeks and habits with no check-in for two
+(`stale_goals`, `stale_habits`) with Update / Pause / Drop right there. The
+Calendar page shows only dated things; habits are cadences and sit in a
+week strip. No streaks, no scores.
+
 ## Data export
 
 Settings → **Export your data**. The JSON export (`planning/export.py`) mirrors
@@ -96,6 +106,7 @@ of every page.
 | --- | --- |
 | Auth | `/signup/`, `/accounts/login/`, `/accounts/logout/`, `/accounts/password_reset/…` |
 | Core | `/` dashboard · `/scores/` (POST, update scores from the dashboard) · `/settings/` · `/history/` · `/onboarding/<1–9>/` |
+| Calendar | `/calendar/` · `/calendar/<year>/<month>/` (milestones, goal target dates, reviews done and due, year bounds, Life Review; habits in a week strip) |
 | Design my life | `/design/` · `/design/<n>/` (one active area per page) · `/design/done/` |
 | Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |
 | Export | `/export/` · `/export/json/` (complete, lossless) · `/export/scores.csv` · `/export/goals.csv` |

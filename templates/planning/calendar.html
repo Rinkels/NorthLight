@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load planning_extras %}
+{% block title %}Calendar · {{ first|date:"F Y" }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
+  <div><h1 class="h3 mb-1">Calendar</h1><div class="hint">What's coming, and whether you're on schedule. Habits live in the week strip, not on the grid: they are cadences, not dates.</div></div>
+  <div class="d-flex align-items-center gap-2">
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'planning:calendar_month' prev.year prev.month %}">‹ {{ prev|date:"M" }}</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'planning:calendar' %}">Today</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'planning:calendar_month' next.year next.month %}">{{ next|date:"M" }} ›</a>
+  </div>
+</div>
+
+<div class="nl-card p-3 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+    <h2 class="h6 mb-0">This week</h2>
+    <a class="small" href="{% url 'planning:habit_list' %}">All habits</a>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    {% for h in habits %}
+      <form method="post" action="{% url 'planning:habit_checkin' h.pk %}" class="m-0">{% csrf_token %}<input type="hidden" name="next" value="{% url 'planning:calendar' %}">
+        <button class="btn btn-sm {% if h.period_done %}btn-success{% else %}btn-outline-secondary{% endif %}" title="{{ h.life_area.name }}">{{ h.title }} <span class="opacity-75">{{ h.period_count }}/{{ h.target_per_period }} {{ h.period_label }}</span></button>
+      </form>
+    {% empty %}<span class="hint">No active habits.</span>{% endfor %}
+  </div>
+  {% if upcoming %}
+    <div class="hint mt-3 mb-1">Milestones due in the next month</div>
+    <ul class="small mb-0">{% for m in upcoming %}<li><a href="{% url 'planning:goal_detail' m.goal.pk %}">{{ m.title }}</a> <span class="text-muted">· {{ m.goal.life_area.name }} · {{ m.due_date|date:"j M" }}</span></li>{% endfor %}</ul>
+  {% endif %}
+</div>
+
+<div class="nl-card p-3">
+  <h2 class="h5 mb-3">{{ first|date:"F Y" }}{% if year_obj %} <span class="hint">· {{ year_obj.title }}</span>{% endif %}</h2>
+  <div class="table-responsive">
+  <table class="table table-bordered nl-cal mb-0">
+    <thead class="small text-muted"><tr>{% for n in weekday_names %}<th>{{ n }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for week in weeks %}<tr>
+      {% for day, in_month, items in week %}
+        <td class="{% if not in_month %}nl-cal-out{% endif %}{% if day == today %} nl-cal-today{% endif %}">
+          <div class="nl-cal-day">{{ day.day }}</div>
+          {% for it in items %}
+            <a href="{{ it.url }}" class="nl-cal-item nl-cal-{{ it.kind }}{% if it.status %} nl-cal-{{ it.status }}{% endif %}" title="{{ it.label }}">{{ it.label }}</a>
+          {% endfor %}
+        </td>
+      {% endfor %}
+    </tr>{% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <div class="hint mt-2 d-flex flex-wrap gap-3">
+    <span><span class="nl-cal-swatch nl-cal-milestone"></span> 90-day milestone</span>
+    <span><span class="nl-cal-swatch nl-cal-goal"></span> Goal target date</span>
+    <span><span class="nl-cal-swatch nl-cal-review"></span> Review done</span>
+    <span><span class="nl-cal-swatch nl-cal-review_due"></span> Review due</span>
+    <span><span class="nl-cal-swatch nl-cal-year"></span> Personal Year</span>
+    <span><span class="nl-cal-swatch nl-cal-life_review"></span> Life Review</span>
+  </div>
+</div>
+{% endblock %}

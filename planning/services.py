@@ -374,6 +374,51 @@ def stale_habits(user, today: date | None = None) -> list[StaleHabit]:
 
 
 # --------------------------------------------------------------------------- #
+# Calendar: dated things only. Habits are cadences, not dates, and stay out.
+# --------------------------------------------------------------------------- #
+
+@dataclass
+class CalendarItem:
+    kind: str          # milestone / goal / review / review_due / year / life_review
+    label: str
+    url: str
+    status: str = ""   # WorkStatus value for milestones/goals, else ""
+
+
+def calendar_items(user, first: date, last: date, today: date | None = None) -> dict[date, list[CalendarItem]]:
+    """Everything with a date between `first` and `last`, keyed by day."""
+    from django.urls import reverse  # local import keeps services free of URL config at import time
+    today = today or timezone.localdate()
+    out: dict[date, list[CalendarItem]] = {}
+
+    def add(day: date | None, item: CalendarItem):
+        if day is not None and first <= day <= last:
+            out.setdefault(day, []).append(item)
+
+    for m in owned(Milestone, user).filter(due_date__range=(first, last)).select_related("goal"):
+        add(m.due_date, CalendarItem("milestone", m.title, reverse("planning:goal_detail", args=[m.goal_id]), m.status))
+    for g in owned(Goal, user).filter(target_date__range=(first, last)):
+        add(g.target_date, CalendarItem("goal", g.title, reverse("planning:goal_detail", args=[g.pk]), g.status))
+    for rv in owned(Review, user).filter(review_date__range=(first, last)):
+        add(rv.review_date, CalendarItem("review", rv.get_review_type_display(), reverse("planning:review_detail", args=[rv.pk])))
+    for y in owned(PersonalYear, user):
+        add(y.start_date, CalendarItem("year", f"{y.title} starts", reverse("planning:year_detail", args=[y.pk])))
+        add(y.end_date, CalendarItem("year", f"{y.title} ends", reverse("planning:year_detail", args=[y.pk])))
+        add(y.foundation_start_date, CalendarItem("year", f"Foundation period for {y.title}", reverse("planning:year_detail", args=[y.pk])))
+    due = next_review_due(user, current_year(user), today)
+    if due:
+        add(due.due_date, CalendarItem("review_due", f"{due.label} due", reverse("planning:review_create", args=[due.kind])))
+    profile = profile_for(user)
+    if profile.life_review_date:
+        for yr in {first.year, last.year}:
+            add(_safe_day(yr, profile.life_review_date.month, profile.life_review_date.day),
+                CalendarItem("life_review", "Life Review", reverse("planning:review_create", args=[ReviewType.LIFE])))
+    for day in out:
+        out[day].sort(key=lambda i: i.kind)
+    return out
+
+
+# --------------------------------------------------------------------------- #
 # History
 # --------------------------------------------------------------------------- #
 

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import areas, core, design, export, goals, onboarding, reviews, years
+from .views import areas, calendar, core, design, export, goals, onboarding, reviews, years
 
 app_name = "planning"
 
@@ -10,6 +10,8 @@ urlpatterns = [
     path("settings/", core.profile, name="profile"),
     path("scores/", core.dashboard_scores, name="dashboard_scores"),
     path("history/", core.history, name="history"),
+    path("calendar/", calendar.calendar_view, name="calendar"),
+    path("calendar/<int:year>/<int:month>/", calendar.calendar_view, name="calendar_month"),
     path("design/", design.design_life, name="design_life"),
     path("design/<int:index>/", design.design_life, name="design_life_step"),
     path("design/done/", design.design_life_done, name="design_life_done"),

@@ -108,3 +108,22 @@ body { color: #26223a; background-color: var(--nl-bg); }
 
 /* Attention card: a quiet nudge, not an alarm */
 .nl-attention { border-left: 4px solid #d9628f; }
+
+/* Calendar */
+.nl-cal { table-layout: fixed; }
+.nl-cal td { height: 6.5rem; vertical-align: top; padding: .3rem; background: #fff; }
+.nl-cal td.nl-cal-out { background: transparent; color: var(--nl-muted); }
+.nl-cal td.nl-cal-today { box-shadow: inset 0 0 0 2px var(--nl-accent); }
+.nl-cal-day { font-size: .8rem; color: var(--nl-muted); margin-bottom: .2rem; }
+.nl-cal-item { display: block; font-size: .72rem; line-height: 1.2; padding: .15rem .35rem; margin-bottom: .15rem; border-radius: .3rem;
+  color: #fff; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nl-cal-item:hover { color: #fff; filter: brightness(.92); }
+.nl-cal-milestone { background: #7b61c9; }
+.nl-cal-goal { background: #a48fdc; }
+.nl-cal-review { background: #5fb3a1; }
+.nl-cal-review_due { background: #d9628f; }
+.nl-cal-year { background: #6c757d; }
+.nl-cal-life_review { background: #c7508a; }
+.nl-cal-item.nl-cal-complete { opacity: .55; text-decoration: line-through; }
+.nl-cal-item.nl-cal-dropped, .nl-cal-item.nl-cal-paused { opacity: .45; }
+.nl-cal-swatch { display: inline-block; width: .8rem; height: .8rem; border-radius: .2rem; vertical-align: -.1rem; margin-right: .2rem; }

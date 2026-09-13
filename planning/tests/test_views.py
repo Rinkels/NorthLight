@@ -114,7 +114,7 @@ class PageSmokeTests(TestCase):
             ("year_list", []), ("year_create", []), ("year_detail", [s.year.pk]), ("year_edit", [s.year.pk]), ("year_next", [s.year.pk]),
             ("goal_list", []), ("goal_create", []), ("goal_detail", [s.goal.pk]), ("goal_edit", [s.goal.pk]),
             ("milestone_create", [s.goal.pk]), ("milestone_edit", [s.milestone.pk]), ("milestone_list", []),
-            ("habit_list", []), ("habit_create", []), ("habit_edit", [s.habit.pk]),
+            ("habit_list", []), ("habit_create", []), ("habit_edit", [s.habit.pk]), ("calendar", []),
             ("review_list", []), ("review_detail", [s.review.pk]), ("review_edit", [s.review.pk]),
         ] + [("review_create", [k]) for k in ("monthly", "quarterly", "annual", "life")] \
           + [("onboarding", [i]) for i in range(1, 10)]
