@@ -8,6 +8,7 @@ from .models import UserProfile
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def ensure_profile(sender, instance, created, **kwargs):
-    if created:
+def ensure_profile(sender, instance, created, raw=False, **kwargs):
+    # Skip fixture loads (raw=True): the fixture carries its own profile row.
+    if created and not raw:
         UserProfile.objects.get_or_create(user=instance)
