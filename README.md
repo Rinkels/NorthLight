@@ -118,6 +118,23 @@ of every page.
 | Reviews | `/reviews/` · `/reviews/new/<monthly|quarterly|annual|life>/` · `/reviews/<id>/` · `…/edit/` `…/delete/` |
 | Admin | `/admin/` (support/dev only) |
 
+## Deploy (Cloud Run)
+
+Production runs on Cloud Run in GCP project `mindsgate-prod` (us-central1)
+with a `northlight` database on the shared Cloud SQL instance `mindsgate-db`,
+served at **life.mindsgate.com**. `Dockerfile` collects static files at build
+(WhiteNoise serves them) and runs `migrate` on start. Secrets live in Secret
+Manager; everything else is plain env (`DB_*`, `DJANGO_ALLOWED_HOSTS`,
+`DJANGO_CSRF_TRUSTED_ORIGINS`, `EMAIL_*`). Redeploy from the repo root:
+
+```bash
+gcloud run deploy northlight --source . --project mindsgate-prod --region us-central1
+```
+
+A deploy keeps the existing env and secrets; pass `--set-env-vars` /
+`--set-secrets` only when they change. Production refuses to start with
+`DJANGO_DEBUG=False` and no secret key.
+
 ## Non-negotiables
 
 - **Per-user isolation.** Every query and object lookup enforces ownership
