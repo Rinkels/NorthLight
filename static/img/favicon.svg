@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<circle cx="32" cy="32" r="32" fill="#efe9f8"/>
+<polygon points="32.00,5.00 47.87,10.16 57.68,23.66 57.68,40.34 47.87,53.84 32.00,59.00 16.13,53.84 6.32,40.34 6.32,23.66 16.13,10.16" fill="none" stroke="#cfc4e6" stroke-width="1.2"/>
+<polygon points="32.00,14.18 42.47,17.58 48.95,26.49 48.95,37.51 42.47,46.42 32.00,49.82 21.53,46.42 15.05,37.51 15.05,26.49 21.53,17.58" fill="none" stroke="#cfc4e6" stroke-width="1.2"/>
+<polygon points="32.00,23.09 37.24,24.79 40.47,29.25 40.47,34.75 37.24,39.21 32.00,40.91 26.76,39.21 23.53,34.75 23.53,29.25 26.76,24.79" fill="none" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="32.00" y2="5.00" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="47.87" y2="10.16" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="57.68" y2="23.66" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="57.68" y2="40.34" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="47.87" y2="53.84" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="32.00" y2="59.00" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="16.13" y2="53.84" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="6.32" y2="40.34" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="6.32" y2="23.66" stroke="#cfc4e6" stroke-width="1.2"/>
+<line x1="32" y1="32" x2="16.13" y2="10.16" stroke="#cfc4e6" stroke-width="1.2"/>
+<polygon points="32.00,10.94 45.49,13.43 52.54,25.33 46.12,36.59 47.08,52.75 32.00,46.85 19.94,48.60 15.05,37.51 11.97,25.49 18.35,13.21" fill="#d9628f" fill-opacity=".12" stroke="#d9628f" stroke-width="2.4" stroke-dasharray="4 3" stroke-linejoin="round"/>
+<polygon points="32.00,15.26 40.73,19.99 42.78,28.50 46.12,36.59 40.25,43.36 32.00,45.50 20.10,48.38 13.51,38.01 13.51,25.99 22.80,19.33" fill="#7b61c9" fill-opacity=".35" stroke="#7b61c9" stroke-width="3" stroke-linejoin="round"/>
+</svg>
